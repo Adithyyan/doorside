@@ -10,7 +10,7 @@ AdminLayout
         ) ←
         div
           h1(class='text-2xl font-black text-slate-900') {{ isEditMode ? 'Edit Product' : 'Create New Product' }}
-          p(class='text-xs text-slate-500') {{ isEditMode ? 'Update product pricing, stock, and supplier mapping' : `Add a new product to your ${$brandName.toLowerCase()} catalog` }}
+          p(class='text-xs text-slate-500') {{ isEditMode ? 'Update product pricing, stock, and supplier mapping' : `Add a new product to your ${($brandName || 'doorside').toLowerCase()} catalog` }}
 
       div(class='flex items-center gap-3')
         router-link(

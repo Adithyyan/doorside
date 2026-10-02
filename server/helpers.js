@@ -164,6 +164,14 @@ const helpers = {
     );
   },
 
+  getAdminPermissions(adminUser) {
+    if (!adminUser) {
+      return [];
+    }
+    const role = adminUser.role_name || adminUser.role;
+    return ROLE_PERMISSIONS[role] || [];
+  },
+
   generateAdminAccessToken(adminUser) {
     return jwt.sign(
       {
@@ -171,7 +179,7 @@ const helpers = {
         email: adminUser.email,
         name: adminUser.name,
         role: adminUser.role_name || adminUser.role,
-        permissions: ROLE_PERMISSIONS[adminUser.role_name || adminUser.role] || [],
+        permissions: this.getAdminPermissions(adminUser),
         isAdmin: true,
       },
       SECRET_TOKEN,

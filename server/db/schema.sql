@@ -1,6 +1,8 @@
 -- Migration: 001_initial_schema.sql
 -- Creates the complete initial database schema for the dropshipping platform
 
+BEGIN;
+
 -- Extensions
 create extension if not exists "uuid-ossp";
 create extension if not exists "pg_trgm";
@@ -147,6 +149,9 @@ create table if not exists suppliers (
     code text unique,
     supplier_type text default 'manual_marketplace',
     integration_type text default 'manual',
+    contact_name text,
+    contact_email text,
+    contact_phone text,
     api_base_url text,
     credentials_ref text,
     configuration jsonb default '{}',
@@ -166,6 +171,7 @@ create index if not exists idx_suppliers_is_active on suppliers(is_active);
 create table if not exists products (
     id uuid primary key default uuid_generate_v4(),
     category_id uuid references categories(id) on delete set null,
+    supplier_id uuid references suppliers(id) on delete set null,
     name text,
     slug text unique,
     sku text unique,
@@ -226,6 +232,7 @@ begin
 end;
 $$ language plpgsql;
 
+drop trigger if exists trg_products_search_vector on products;
 create trigger trg_products_search_vector
 before insert or update on products
 for each row execute function update_product_search_vector();
@@ -712,6 +719,7 @@ create table if not exists pages (
     slug text unique,
     title text,
     content text,
+    content_html text,
     meta_title text,
     meta_description text,
     is_published boolean default false,
@@ -721,6 +729,7 @@ create table if not exists pages (
 );
 
 create index if not exists idx_pages_slug on pages(slug);
+alter table pages add column if not exists content_html text;
 
 create table if not exists homepage_sections (
     id uuid primary key default uuid_generate_v4(),
@@ -768,6 +777,24 @@ create table if not exists store_settings (
 create index if not exists idx_store_settings_category on store_settings(category);
 create index if not exists idx_store_settings_key on store_settings(key);
 create index if not exists idx_store_settings_is_public on store_settings(is_public);
+
+create table if not exists settings (
+    id uuid primary key default uuid_generate_v4(),
+    category text,
+    key text,
+    value text,
+    value_type text default 'string',
+    label text,
+    description text,
+    is_public boolean default false,
+    created_at timestamp default now(),
+    updated_at timestamp default now(),
+    unique(category, key)
+);
+
+create index if not exists idx_settings_category on settings(category);
+create index if not exists idx_settings_key on settings(key);
+create index if not exists idx_settings_is_public on settings(is_public);
 
 -- ============================================================
 -- WISHLIST
@@ -826,3 +853,10 @@ create index if not exists idx_admin_refresh_tokens_admin_user_id on admin_refre
 -- ============================================================
 
 create sequence if not exists order_number_seq start with 100001;
+
+create table if not exists schema_migrations (
+    filename text primary key,
+    executed_at timestamp default now()
+);
+
+COMMIT;

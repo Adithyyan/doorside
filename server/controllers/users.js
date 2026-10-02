@@ -383,8 +383,7 @@ const api = {
   // ADMIN AUTHENTICATION
   // ==========================================
   async adminLogin(req, res) {
-    let normalizedEmail = req.body?.email?.trim().toLowerCase();
-    if (normalizedEmail === 'admin') normalizedEmail = 'admin@dropship.test';
+    const normalizedEmail = req.body?.email?.trim().toLowerCase();
 
     const qObj = {
       email: normalizedEmail,
@@ -412,12 +411,9 @@ const api = {
         return res.status(401).json({ success: false, msg: 'Invalid email or password.' });
       }
 
-      let isValid = await helpers.verifyPassword(qObj.password, adminUser.password_hash);
-      if (!isValid && (qObj.password === 'AdminPass@123!' || qObj.password === 'admin123' || qObj.password === 'admin')) {
-        isValid = true;
-      }
+      const isPasswordValid = await helpers.verifyPassword(qObj.password, adminUser.password_hash);
 
-      if (!isValid) {
+      if (!isPasswordValid) {
         req.log.warn('users.adminLogin(): Wrong admin password', { email: qObj.email });
         return res.status(401).json({ success: false, msg: 'Invalid email or password.' });
       }
@@ -443,7 +439,7 @@ const api = {
         name: adminUser.name,
         email: adminUser.email,
         role: adminUser.role_name || 'super_admin',
-        permissions: helpers.generateAdminAccessToken(adminUser),
+        permissions: helpers.getAdminPermissions(adminUser),
       };
 
       res.cookie('adminRefreshToken', refreshToken, REFRESH_COOKIE_OPTIONS);

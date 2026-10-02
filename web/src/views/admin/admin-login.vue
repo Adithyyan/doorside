@@ -17,7 +17,7 @@ div(class='min-h-screen bg-slate-900 flex items-center justify-center p-4')
     div(class='mb-6 p-3.5 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-between gap-3')
       div
         p(class='text-xs font-bold text-amber-400') Demo Admin Credentials
-        p(class='text-[11px] text-slate-400 font-mono mt-0.5') admin@{{ $brandName.toLowerCase() }}.test &bull; AdminPass@123!
+        p(class='text-[11px] text-slate-400 font-mono mt-0.5') admin@{{ ($brandName || 'doorside').toLowerCase() }}.test &bull; AdminPass@123!
       button(
         type='button',
         class='px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold text-[11px] hover:bg-amber-300 transition-colors shrink-0 shadow-sm',
@@ -31,7 +31,7 @@ div(class='min-h-screen bg-slate-900 flex items-center justify-center p-4')
           class='w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400',
           type='email',
           v-model='email',
-          :placeholder='`admin@${$brandName.toLowerCase()}.test or admin@example.com`',
+          :placeholder='`admin@${($brandName || "doorside").toLowerCase()}.test or admin@example.com`',
           required,
           autofocus
         )
@@ -73,7 +73,8 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 function fillDemo() {
-  email.value = `admin@${import.meta.env.VITE_BRAND_NAME?.toLowerCase()}.test`;
+  const brand = (import.meta.env.VITE_BRAND_NAME || 'doorside').toLowerCase();
+  email.value = `admin@${brand}.test`;
   password.value = 'AdminPass@123!';
   errorMessage.value = '';
 }
