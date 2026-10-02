@@ -7,7 +7,9 @@ import App from './App.vue';
 const app = createApp(App);
 const pinia = createPinia();
 
-app.config.globalProperties.$brandName = import.meta.env.VITE_BRAND_NAME || '';
+const brandName = import.meta.env.VITE_BRAND_NAME;
+app.config.globalProperties.$brandName = brandName;
+document.title = brandName;
 
 app.use(pinia);
 app.use(router);

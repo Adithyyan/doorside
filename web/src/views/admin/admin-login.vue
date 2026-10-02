@@ -73,7 +73,7 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 function fillDemo() {
-  email.value = `admin@${import.meta.env.VITE_BRAND_NAME?.toLowerCase() || 'doorside'}.test`;
+  email.value = `admin@${import.meta.env.VITE_BRAND_NAME?.toLowerCase()}.test`;
   password.value = 'AdminPass@123!';
   errorMessage.value = '';
 }
