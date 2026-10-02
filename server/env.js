@@ -21,7 +21,6 @@ dotenv.config({
 });
 
 const config = {
-  useMockDb: process.env.USE_MOCK_DB === 'true' || process.env.DATABASE_URL === 'mock' || !process.env.DATABASE_URL,
   dbConnString: process.env.DATABASE_URL,
   port: parseInt(process.env.PORT, 10) || 3001,
   env: process.env.NODE_ENV || 'development',

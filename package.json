@@ -9,9 +9,9 @@
     "server": "npm run dev --workspace=server",
     "build": "npm run build --workspace=web",
     "lint": "npm run lint --workspace=server",
-    "test": "npm run test --workspace=server",
-    "db:migrate": "node server/db/migrate.js",
-    "db:seed": "node server/db/seed.js"
+    "db:setup": "node server/db/init.js",
+    "db:migrate": "node server/db/init.js --schema-only",
+    "db:seed": "node server/db/init.js --seed-only"
   },
   "workspaces": [
     "web",

@@ -7,7 +7,7 @@ import App from './App.vue';
 const app = createApp(App);
 const pinia = createPinia();
 
-const brandName = import.meta.env.VITE_BRAND_NAME;
+const brandName = import.meta.env.VITE_BRAND_NAME || 'DoorSide';
 app.config.globalProperties.$brandName = brandName;
 document.title = brandName;
 
