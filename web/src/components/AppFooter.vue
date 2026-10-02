@@ -1,85 +1,71 @@
 <template lang="pug">
-footer(class='bg-[#f5f5f7] text-[#6e6e73] pt-12 pb-10 border-t border-[#d2d2d7] text-xs font-normal')
-  div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8')
-    // Footnote & Disclaimers (Apple Footnotes Style)
-    div(class='space-y-2 pb-6 border-b border-[#d2d2d7] text-[11px] text-[#86868b] leading-relaxed')
-      p * All pricing includes applicable GST and taxes. Free standard shipping applies to orders satisfying the minimum threshold. Delivery timelines may vary by PIN code and courier availability.
-      p † Product specifications and feature claims are verified with certified suppliers. Instant cashback and EMI offers subject to issuing bank approval and terms.
+footer(class='bg-slate-900 text-slate-400')
+  div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10')
+    div(class='grid grid-cols-2 gap-10 md:grid-cols-4')
+      div(class='col-span-2 md:col-span-1 space-y-4')
+        div
+          span(class='text-xl font-black text-white') {{ mainStore().brandName }}
+          p(class='text-xs text-slate-500 mt-1') India's trusted online store.
+        p(class='text-sm text-slate-400 leading-relaxed') Curated tech accessories, wearables & smart gadgets. Delivered fast, with love.
+        div(class='flex items-center gap-3 pt-2')
+          a(href='#', class='w-8 h-8 bg-slate-800 hover:bg-teal-700 rounded-lg flex items-center justify-center text-sm text-white transition-colors', aria-label='Instagram') 📸
+          a(href='#', class='w-8 h-8 bg-slate-800 hover:bg-teal-700 rounded-lg flex items-center justify-center text-sm text-white transition-colors', aria-label='WhatsApp') 💬
+          a(href='#', class='w-8 h-8 bg-slate-800 hover:bg-teal-700 rounded-lg flex items-center justify-center text-sm text-white transition-colors', aria-label='Facebook') 👍
 
-    // 4 Directory Columns
-    div(class='grid grid-cols-2 gap-8 md:grid-cols-4 pt-2')
-      // Column 1: Shop & Explore
       div(class='space-y-3')
-        h4(class='text-xs font-semibold text-[#1d1d1f]') Shop & Explore
-        ul(class='space-y-2.5 text-xs text-[#424245]')
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shop') All Products
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shop?category=audio') Audio & Sound
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shop?category=wearables') Smart Wearables
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shop?category=accessories') Accessories & Cases
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shop?category=chargers') Power & Charging
+        h4(class='text-sm font-bold text-white') Quick Links
+        ul(class='space-y-2.5 text-sm')
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shop') All Products
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shop?category=audio') Audio & Sound
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shop?category=wearables') Smart Wearables
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shop?category=accessories') Accessories
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shop?category=chargers') Chargers
+          li: router-link(class='hover:text-teal-400 transition-colors font-semibold text-teal-400', to='/shop') Sale
 
-      // Column 2: Account & Orders
       div(class='space-y-3')
-        h4(class='text-xs font-semibold text-[#1d1d1f]') Account & Orders
-        ul(class='space-y-2.5 text-xs text-[#424245]')
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/account/orders') Order History
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/track-order') Track Your Delivery
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/account/profile') Profile Settings
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/cart') View Shopping Bag
+        h4(class='text-sm font-bold text-white') Customer Service
+        ul(class='space-y-2.5 text-sm')
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/track-order') Track My Order
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/account/orders') My Orders
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/refund-policy') Returns & Refunds
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/shipping-policy') Shipping Info
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/contact') Contact Support
+          li: router-link(class='hover:text-teal-400 transition-colors', to='/cancellation-policy') Cancellation Policy
 
-      // Column 3: Trust & Policies
-      div(class='space-y-3')
-        h4(class='text-xs font-semibold text-[#1d1d1f]') Policies & Terms
-        ul(class='space-y-2.5 text-xs text-[#424245]')
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/privacy-policy') Privacy Policy
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/terms-and-conditions') Terms of Sale & Use
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/shipping-policy') Shipping Information
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/refund-policy') Return & Refund Policy
-          li
-            router-link(class='hover:text-[#1d1d1f] hover:underline', to='/cancellation-policy') Cancellation Guidelines
+      div(class='space-y-4')
+        h4(class='text-sm font-bold text-white') Get in Touch
+        div(class='space-y-3 text-sm')
+          div(v-if='mainStore().supportEmail', class='flex items-start gap-2')
+            span(class='text-teal-400 mt-0.5') ✉
+            div
+              p(class='text-slate-500 text-xs') Email us at
+              a(:href='`mailto:${mainStore().supportEmail}`', class='text-white hover:text-teal-400 transition-colors text-xs') {{ mainStore().supportEmail }}
+          div(v-if='mainStore().supportPhone', class='flex items-start gap-2')
+            span(class='text-teal-400 mt-0.5') 📞
+            div
+              p(class='text-slate-500 text-xs') Call or WhatsApp
+              span(class='text-white text-xs') {{ mainStore().supportPhone }}
+          div(class='flex items-start gap-2')
+            span(class='text-teal-400 mt-0.5') 🕘
+            div
+              p(class='text-slate-500 text-xs') Support Hours
+              span(class='text-white text-xs') Mon–Sat · 9AM – 7PM IST
 
-      // Column 4: Specialist Support
-      div(class='space-y-3')
-        h4(class='text-xs font-semibold text-[#1d1d1f]') Specialist Support
-        p(class='text-xs text-[#6e6e73] leading-relaxed')
-          | Speak with our dedicated team for product guidance, order inquiries, or corporate bulk purchases.
-        ul(class='space-y-2 pt-1 text-xs text-[#424245]')
-          li(v-if='mainStore().supportEmail')
-            span(class='text-[#86868b]') Email: 
-            a(class='text-[#0071e3] hover:underline', :href='`mailto:${mainStore().supportEmail}`') {{ mainStore().supportEmail }}
-          li(v-if='mainStore().supportPhone')
-            span(class='text-[#86868b]') Phone: 
-            span(class='font-medium text-[#1d1d1f]') {{ mainStore().supportPhone }}
-          li
-            span(class='text-[#86868b]') Hours: 
-            span Mon – Sat, 9:00 AM – 7:00 PM IST
+        div(class='flex items-center gap-2 flex-wrap pt-2')
+          span(class='text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded') UPI
+          span(class='text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded') Cards
+          span(class='text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded') COD
+          span(class='text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded') EMI
 
-    // Bottom Copyright & Legal Links (Apple Standard Row)
-    div(class='pt-8 border-t border-[#d2d2d7] flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-[#86868b]')
-      div(class='flex flex-wrap items-center gap-x-4 gap-y-1 text-center md:text-left')
-        span Copyright © {{ currentYear }} {{ mainStore().brandName }}. All rights reserved.
-        span(class='hidden md:inline text-[#d2d2d7]') |
-        router-link(class='hover:underline hover:text-[#1d1d1f]', to='/privacy-policy') Privacy Policy
-        router-link(class='hover:underline hover:text-[#1d1d1f]', to='/about') Legal
-        router-link(class='hover:underline hover:text-[#1d1d1f]', to='/admin/login') Staff / Admin Portal
-
-      div(class='flex items-center gap-2 text-[11px] text-[#6e6e73]')
-        span India
-        span(class='text-[#d2d2d7]') |
-        span 100% Encrypted Transactions
+  div(class='border-t border-slate-800')
+    div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-500')
+      span Copyright © {{ currentYear }} {{ mainStore().brandName }}. All rights reserved.
+      div(class='flex flex-wrap items-center gap-x-4 gap-y-1')
+        router-link(class='hover:text-white transition-colors', to='/privacy-policy') Privacy Policy
+        router-link(class='hover:text-white transition-colors', to='/terms-and-conditions') Terms of Use
+        router-link(class='hover:text-white transition-colors', to='/shipping-policy') Shipping
+        router-link(class='hover:text-white transition-colors', to='/admin/login') Admin
+      span 🇮🇳 Made in India · Secured by Razorpay
 </template>
 
 <script setup>

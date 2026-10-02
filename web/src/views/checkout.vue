@@ -1,37 +1,34 @@
 <template lang="pug">
 StoreLayout
-  div(class='bg-[#f5f5f7] min-h-screen py-10 sm:py-14')
+  div(class='bg-slate-50 min-h-screen py-10 sm:py-14')
     div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8')
-      // Page Heading
-      div(class='border-b border-[#e5e5ea] pb-4')
-        h1(class='text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1f]')
-          | Checkout
-        p(class='text-xs text-[#6e6e73] mt-1')
+      div(class='border-b border-slate-200 pb-4')
+        h1(class='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900')
+          | Express Checkout
+        p(class='text-xs text-slate-500 mt-1')
           | Fast, encrypted checkout with instant dispatch across India.
 
       div(class='grid grid-cols-1 gap-10 lg:grid-cols-12 items-start')
-        // Left Column: Step Cards
         div(class='space-y-6 lg:col-span-7')
-          // Step 1: Contact Information
-          div(class='apple-card p-6 sm:p-8 bg-white space-y-5')
+          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-[#1d1d1f] text-white text-xs font-bold flex items-center justify-center') 1
-              h2(class='text-base sm:text-lg font-bold text-[#1d1d1f]') Contact Information
+              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 1
+              h2(class='text-base sm:text-lg font-bold text-slate-900') Contact Information
             
             div(class='grid grid-cols-1 gap-4 sm:grid-cols-2')
               div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') Full Name *
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Full Name *
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='Enter your full name',
                   v-model='form.customerName',
                   required
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') Mobile Phone * (for delivery SMS)
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Mobile Phone * (for delivery SMS)
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='tel',
                   placeholder='10-digit mobile number',
                   maxlength='10',
@@ -39,42 +36,41 @@ StoreLayout
                   required
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') Email Address (for order receipts)
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Email Address (for order receipts)
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='email',
                   placeholder='name@example.com',
                   v-model='form.customerEmail'
                 )
 
-          // Step 2: Delivery Address
-          div(class='apple-card p-6 sm:p-8 bg-white space-y-5')
+          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-[#1d1d1f] text-white text-xs font-bold flex items-center justify-center') 2
-              h2(class='text-base sm:text-lg font-bold text-[#1d1d1f]') Shipping Address
+              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 2
+              h2(class='text-base sm:text-lg font-bold text-slate-900') Shipping Address
             
             div(class='grid grid-cols-1 gap-4 sm:grid-cols-2')
               div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') House No., Building, Street *
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') House No., Building, Street *
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='Flat / Door no., Apartment / Street',
                   v-model='form.addressLine1',
                   required
                 )
               div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') Area / Colony / Landmark (Optional)
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Area / Colony / Landmark (Optional)
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='Nearby landmark or locality',
                   v-model='form.addressLine2'
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') 6-Digit PIN Code *
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') 6-Digit PIN Code *
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='6-digit pincode',
                   maxlength='6',
@@ -82,106 +78,104 @@ StoreLayout
                   required
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') City / Town *
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') City / Town *
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='City or town',
                   v-model='form.city',
                   required
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') State *
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') State *
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#1d1d1f] focus:bg-white focus:border-[#0071e3] focus:outline-hidden transition-all',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
                   type='text',
                   placeholder='State',
                   v-model='form.state',
                   required
                 )
               div
-                label(class='block text-xs font-semibold text-[#1d1d1f] mb-1.5') Country
+                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Country
                 input(
-                  class='w-full px-4 py-2.5 text-xs bg-[#f5f5f7] border border-[#d2d2d7] rounded-xl text-[#86868b]',
+                  class='w-full px-4 py-2.5 text-xs bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed',
                   type='text',
                   value='India',
                   disabled
                 )
 
-          // Step 3: Payment Method
-          div(class='apple-card p-6 sm:p-8 bg-white space-y-5')
+          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-[#1d1d1f] text-white text-xs font-bold flex items-center justify-center') 3
-              h2(class='text-base sm:text-lg font-bold text-[#1d1d1f]') Payment
+              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 3
+              h2(class='text-base sm:text-lg font-bold text-slate-900') Payment Method
             
             div(class='space-y-3')
               label(
                 v-if='mainStore().prepaidEnabled',
-                class='flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all',
-                :class='form.paymentMethod === "razorpay" ? "border-[#0071e3] bg-[#f5f5f7] shadow-xs" : "border-[#d2d2d7] hover:border-[#1d1d1f]"'
+                class='flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all',
+                :class='form.paymentMethod === "razorpay" ? "border-teal-600 bg-teal-50/40 shadow-xs" : "border-slate-200 hover:border-slate-400"'
               )
-                input(class='mt-1 text-[#0071e3] focus:ring-0', type='radio', value='razorpay', v-model='form.paymentMethod')
+                input(class='mt-1 text-teal-600 focus:ring-0', type='radio', value='razorpay', v-model='form.paymentMethod')
                 div(class='flex-1')
                   div(class='flex items-center justify-between')
-                    span(class='text-xs font-bold text-[#1d1d1f]') Online Payment (UPI, Cards, NetBanking, EMI)
-                    span(class='apple-badge-pill text-[10px]') Recommended
-                  p(class='text-2xs text-[#6e6e73] mt-1')
+                    span(class='text-xs font-bold text-slate-900') Online Payment (UPI, Cards, NetBanking, EMI)
+                    span(class='text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full') Recommended
+                  p(class='text-2xs text-slate-500 mt-1')
                     | Instant & secure checkout powered by Razorpay. Zero transaction fees.
               
               label(
                 v-if='mainStore().codEnabled',
-                class='flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all',
-                :class='form.paymentMethod === "cod" ? "border-[#0071e3] bg-[#f5f5f7] shadow-xs" : "border-[#d2d2d7] hover:border-[#1d1d1f]"'
+                class='flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all',
+                :class='form.paymentMethod === "cod" ? "border-teal-600 bg-teal-50/40 shadow-xs" : "border-slate-200 hover:border-slate-400"'
               )
-                input(class='mt-1 text-[#0071e3] focus:ring-0', type='radio', value='cod', v-model='form.paymentMethod')
+                input(class='mt-1 text-teal-600 focus:ring-0', type='radio', value='cod', v-model='form.paymentMethod')
                 div(class='flex-1')
-                  span(class='text-xs font-bold text-[#1d1d1f]') Cash on Delivery (COD)
-                  p(class='text-2xs text-[#6e6e73] mt-1')
-                    | Pay in cash directly to the courier upon delivery at your doorstep.
+                  div(class='flex items-center justify-between')
+                    span(class='text-xs font-bold text-slate-900') Cash on Delivery (COD)
+                    span(class='text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full') Pay at Doorstep
+                  p(class='text-2xs text-slate-500 mt-1')
+                    | Pay in cash or UPI directly to the courier upon delivery at your doorstep.
 
-        // Right Column: Order Summary Card
         div(class='space-y-6 lg:col-span-5')
-          div(class='apple-card p-6 sm:p-8 bg-white space-y-5 sticky top-20')
-            h2(class='text-base font-bold text-[#1d1d1f]') Order Summary ({{ mainStore().totalItemsCount }})
+          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs sticky top-20')
+            h2(class='text-base font-bold text-slate-900') Order Summary ({{ mainStore().totalItemsCount }})
 
-            // Items Preview List
-            div(class='divide-y divide-[#f5f5f7] max-h-64 overflow-y-auto pr-1 no-scrollbar')
+            div(class='divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1 no-scrollbar')
               div(
                 v-for='item in mainStore().items',
                 :key='`${item.productId}-${item.variantId}`',
                 class='py-3 flex items-center gap-3'
               )
-                div(class='w-12 h-12 rounded-xl bg-[#f5f5f7] flex items-center justify-center p-1 shrink-0 overflow-hidden')
+                div(class='w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 shrink-0 overflow-hidden')
                   img(
                     class='max-h-full max-w-full object-contain',
                     :src='item.product.primary_image_url || "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=100&q=80"',
                     :alt='item.product.name'
                   )
                 div(class='flex-1 min-w-0')
-                  p(class='text-xs font-bold text-[#1d1d1f] truncate') {{ item.product.name }}
-                  p(class='text-2xs text-[#6e6e73]') Qty: {{ item.quantity }}
-                span(class='text-xs font-bold text-[#1d1d1f]')
+                  p(class='text-xs font-bold text-slate-900 truncate') {{ item.product.name }}
+                  p(class='text-2xs text-slate-500') Qty: {{ item.quantity }}
+                span(class='text-xs font-bold text-slate-900')
                   | {{ formatPrice((item.variant?.sellingPricePaisa || item.product.selling_price_paisa) * item.quantity) }}
 
-            // Totals Breakdown
-            div(class='space-y-2 pt-3 border-t border-[#e5e5ea] text-xs text-[#6e6e73]')
+            div(class='space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-500')
               div(class='flex justify-between')
                 span Subtotal
-                span(class='font-medium text-[#1d1d1f]') {{ formatPrice(mainStore().subtotalPaisa) }}
-              div(v-if='mainStore().discountPaisa > 0', class='flex justify-between text-[#1b7a3a]')
+                span(class='font-medium text-slate-900') {{ formatPrice(mainStore().subtotalPaisa) }}
+              div(v-if='mainStore().discountPaisa > 0', class='flex justify-between text-teal-700')
                 span Coupon Discount
                 span(class='font-semibold') -{{ formatPrice(mainStore().discountPaisa) }}
               div(class='flex justify-between')
                 span Shipping
-                span(v-if='mainStore().shippingPaisa === 0', class='text-[#1b7a3a] font-medium') FREE
-                span(v-else, class='text-[#1d1d1f] font-medium') {{ formatPrice(mainStore().shippingPaisa) }}
+                span(v-if='mainStore().shippingPaisa === 0', class='text-teal-700 font-medium') FREE
+                span(v-else, class='text-slate-900 font-medium') {{ formatPrice(mainStore().shippingPaisa) }}
               
-              div(class='flex justify-between text-base font-bold text-[#1d1d1f] pt-3 border-t border-[#e5e5ea]')
+              div(class='flex justify-between text-base font-bold text-slate-900 pt-3 border-t border-slate-100')
                 span Total Amount
                 span {{ formatPrice(mainStore().totalPaisa) }}
 
             button(
-              class='w-full apple-btn-primary py-3.5 text-sm font-semibold shadow-md disabled:opacity-50',
+              class='w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl transition-all shadow-md active:scale-98 disabled:opacity-50',
               :disabled='isSubmitting || mainStore().items.length === 0',
               @click='handlePlaceOrder'
             )
@@ -189,7 +183,7 @@ StoreLayout
               span(v-else-if='form.paymentMethod === "cod"') Complete Order with COD →
               span(v-else) Pay {{ formatPrice(mainStore().totalPaisa) }} Securely →
 
-            p(class='text-center text-[11px] text-[#86868b] leading-tight')
+            p(class='text-center text-[11px] text-slate-400 leading-tight')
               | By clicking above, you confirm your order and agree to our Terms of Sale and Return Guidelines.
 </template>
 
@@ -202,7 +196,6 @@ import { mainStore } from '@/store';
 import { formatPrice, api } from '@/helpers';
 
 const router = useRouter();
-
 const isSubmitting = ref(false);
 
 const form = ref({
@@ -220,7 +213,7 @@ const form = ref({
 
 onMounted(() => {
   if (mainStore().items.length === 0) {
-    mainStore().info('Your bag is empty. Add items before checking out.');
+    mainStore().info('Your cart is empty. Add items before checking out.');
     router.push('/shop');
   }
 });
@@ -274,7 +267,6 @@ async function handlePlaceOrder() {
     if (res.success && res.data) {
       const order = res.data.order;
 
-      // Handle COD
       if (form.value.paymentMethod === 'cod') {
         mainStore().clearCart();
         mainStore().success('Order placed successfully!');
@@ -282,7 +274,6 @@ async function handlePlaceOrder() {
         return;
       }
 
-      // Handle Razorpay (Prepaid)
       await loadRazorpayScript();
 
       if (!window.Razorpay) {

@@ -1,178 +1,89 @@
 <template lang="pug">
 StoreLayout
-  // 1. Apple Store Header Greeting
   HeroBanner
-
-  // 2. Apple Store Horizontal Category Shelf
+  TrustBadges
   CategoryGrid(:categories='categories')
 
-  // 3. Apple Store "The latest. Take a look at what's new." Carousel (From Screenshot 2)
-  section(class='py-10 sm:py-14 bg-[#f5f5f7]')
+  section(class='py-12 bg-slate-50')
     div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
-      div(class='apple-section-header flex items-end justify-between mb-6')
-        h2(class='apple-section-title')
-          span(class='heading-primary') The latest. 
-          span(class='heading-secondary') Take a look at what's new.
-        
-        div(class='hidden sm:flex items-center gap-2')
-          button(
-            class='apple-nav-arrow shadow-xs',
-            @click='scrollHeroLeft',
-            aria-label='Scroll left'
-          )
-            span(class='text-base font-bold leading-none') ‹
-          button(
-            class='apple-nav-arrow shadow-xs',
-            @click='scrollHeroRight',
-            aria-label='Scroll right'
-          )
-            span(class='text-base font-bold leading-none') ›
-
-      // Large Immersive Hero Cards Row (Horizontally Scrollable)
-      div(
-        ref='heroCardsContainer',
-        class='flex gap-5 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 px-0.5'
-      )
-        // Hero Card 1: Dark Obsidian Luxury Card
-        router-link(
-          class='apple-card-dark shrink-0 w-[300px] sm:w-[380px] md:w-[420px] h-[480px] sm:h-[500px] p-8 flex flex-col justify-between relative overflow-hidden group cursor-pointer',
-          to='/shop?category=audio'
-        )
-          div(class='space-y-2 relative z-10')
-            span(class='apple-badge text-[#ff8d36]') NEW RELEASE
-            h3(class='text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight')
-              | Pro Wireless Audio
-            p(class='text-xs sm:text-sm text-[#a1a1a6] max-w-xs leading-relaxed')
-              | Spatial acoustic architecture with adaptive hybrid noise cancellation.
-            p(class='text-xs font-medium text-[#86868b] pt-1')
-              | From ₹1,499.00*
-          
-          div(class='relative w-full h-56 mt-4 flex items-center justify-center')
-            img(
-              class='max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-500 group-hover:scale-105',
-              src='https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80',
-              alt='Pro Wireless Audio'
-            )
-
-        // Hero Card 2: Light Clean Minimal Card
-        router-link(
-          class='apple-card shrink-0 w-[300px] sm:w-[380px] md:w-[420px] h-[480px] sm:h-[500px] p-8 flex flex-col justify-between relative overflow-hidden group cursor-pointer bg-white',
-          to='/shop?category=wearables'
-        )
-          div(class='space-y-2 relative z-10')
-            span(class='apple-badge') BESTSELLER
-            h3(class='text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f] leading-tight')
-              | Ultra Active Smartwatch
-            p(class='text-xs sm:text-sm text-[#6e6e73] max-w-xs leading-relaxed')
-              | Continuous biometric metrics, AMOLED display, and 10-day battery life.
-            p(class='text-xs font-medium text-[#6e6e73] pt-1')
-              | From ₹2,499.00*
-          
-          div(class='relative w-full h-56 mt-4 flex items-center justify-center')
-            img(
-              class='max-h-full max-w-full object-contain filter drop-shadow-xl transition-transform duration-500 group-hover:scale-105',
-              src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80',
-              alt='Ultra Active Smartwatch'
-            )
-
-        // Hero Card 3: Dark Luxury Protective Case Card
-        router-link(
-          class='apple-card-dark shrink-0 w-[300px] sm:w-[380px] md:w-[420px] h-[480px] sm:h-[500px] p-8 flex flex-col justify-between relative overflow-hidden group cursor-pointer',
-          to='/shop?category=cases'
-        )
-          div(class='space-y-2 relative z-10')
-            span(class='apple-badge text-[#ff8d36]') MAGSAFE COMPATIBLE
-            h3(class='text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight')
-              | TechWoven Cases
-            p(class='text-xs sm:text-sm text-[#a1a1a6] max-w-xs leading-relaxed')
-              | Precision micro-twill weave with reinforced shock absorption.
-            p(class='text-xs font-medium text-[#86868b] pt-1')
-              | From ₹699.00*
-          
-          div(class='relative w-full h-56 mt-4 flex items-center justify-center')
-            img(
-              class='max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-500 group-hover:scale-105',
-              src='https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=600&q=80',
-              alt='TechWoven Protective Case'
-            )
-
-        // Hero Card 4: Light Fast Charging & Desk Ecosystem Card
-        router-link(
-          class='apple-card shrink-0 w-[300px] sm:w-[380px] md:w-[420px] h-[480px] sm:h-[500px] p-8 flex flex-col justify-between relative overflow-hidden group cursor-pointer bg-white',
-          to='/shop?category=chargers'
-        )
-          div(class='space-y-2 relative z-10')
-            span(class='apple-badge') ESSENTIALS
-            h3(class='text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f] leading-tight')
-              | GaN Fast Power Adapters
-            p(class='text-xs sm:text-sm text-[#6e6e73] max-w-xs leading-relaxed')
-              | 65W dual USB-C intelligent power delivery in a pocket-sized footprint.
-            p(class='text-xs font-medium text-[#6e6e73] pt-1')
-              | From ₹999.00*
-          
-          div(class='relative w-full h-56 mt-4 flex items-center justify-center')
-            img(
-              class='max-h-full max-w-full object-contain filter drop-shadow-xl transition-transform duration-500 group-hover:scale-105',
-              src='https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80',
-              alt='Fast Power Adapters'
-            )
-
-  // 4. Apple Store "Accessories & Essentials" Grid (From Screenshot 3)
-  section(class='py-12 sm:py-16 bg-[#f5f5f7]')
-    div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
-      div(class='apple-section-header flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8')
+      div(class='flex items-end justify-between mb-8')
         div
-          h2(class='apple-section-title')
-            span(class='heading-primary') Essentials. 
-            span(class='heading-secondary') Crafted to pair perfectly with your favourite devices.
-        router-link(class='apple-link text-sm hidden sm:inline-flex', to='/shop')
-          span Explore all products
-          span(class='text-2xs') ›
+          p(class='section-label') Best Sellers
+          h2(class='text-2xl sm:text-3xl font-black text-slate-900 tracking-tight') Trending Right Now
+        router-link(class='hidden sm:flex items-center gap-1 text-sm font-semibold text-teal-700 hover:text-teal-800 transition-colors', to='/shop')
+          span View All
+          span →
 
-      // Product Grid
-      div(
-        v-if='featuredProducts.length > 0',
-        class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6'
-      )
-        ProductCard(
-          v-for='product in featuredProducts',
-          :key='product.id',
-          :product='product'
-        )
-      
-      div(v-else-if='isLoading', class='grid grid-cols-2 gap-5 sm:grid-cols-4')
-        div(v-for='n in 4', :key='n', class='apple-card h-80 animate-pulse bg-white/60')
-      
-      div(v-else, class='text-center py-16 apple-card p-8')
-        p(class='text-sm text-[#6e6e73]') Products are currently syncing. Please check back in a moment.
+      div(v-if='featuredProducts.length > 0', class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5')
+        ProductCard(v-for='product in featuredProducts.slice(0, 8)', :key='product.id', :product='product')
 
-  // 5. Apple Store Style Promotional Banner Card
-  section(class='py-6 sm:py-8 bg-[#f5f5f7]')
+      div(v-else-if='isLoading', class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5')
+        div(v-for='n in 8', :key='n', class='bg-white rounded-2xl overflow-hidden border border-slate-100')
+          div(class='aspect-square bg-slate-100 animate-pulse')
+          div(class='p-4 space-y-2')
+            div(class='h-3 bg-slate-100 rounded animate-pulse w-1/3')
+            div(class='h-4 bg-slate-100 rounded animate-pulse')
+            div(class='h-6 bg-slate-100 rounded animate-pulse w-1/2 mt-3')
+
+      div(v-else, class='text-center py-16 bg-white rounded-2xl border border-slate-100')
+        p(class='text-2xl mb-2') 🛍️
+        p(class='text-sm text-slate-500') Products are syncing. Check back in a moment.
+
+      div(class='mt-8 text-center sm:hidden')
+        router-link(class='inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition-colors', to='/shop')
+          span Explore All Products
+          span →
+
+  section(class='py-8 bg-white')
     div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
-      div(class='apple-card bg-gradient-to-r from-[#1d1d1f] to-[#2c2c2e] text-white p-8 sm:p-12 rounded-[28px] shadow-lg flex flex-col md:flex-row items-center justify-between gap-8')
-        div(class='space-y-3 text-center md:text-left')
-          div(class='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#ff8d36]')
-            span Special Welcome Invitation
-          h3(class='text-2xl sm:text-3xl font-bold tracking-tight text-white')
-            | Enjoy 10% instant savings on your first purchase.
-          p(class='text-sm text-[#a1a1a6] max-w-xl')
-            | Enter code 
-            span(class='font-mono font-bold text-white bg-white/15 px-2 py-0.5 rounded-md border border-white/20 select-all') WELCOME10
-            |  at checkout. Complimentary express shipping included on all eligible orders.
-        
-        div(class='shrink-0')
-          router-link(
-            class='apple-btn-primary px-8 py-3.5 text-sm font-semibold shadow-md',
-            to='/shop'
-          )
-            span Shop the Collection
-            span ›
+      div(class='relative bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 sm:p-12 overflow-hidden')
+        div(class='absolute top-0 right-0 w-80 h-80 bg-teal-600/10 rounded-full blur-3xl pointer-events-none')
 
-  // 6. Apple Store Difference Section (From Screenshot 3)
+        div(class='relative z-10 flex flex-col sm:flex-row items-center justify-between gap-8')
+          div(class='text-center sm:text-left space-y-3')
+            div(class='inline-flex items-center gap-2 px-3 py-1 bg-teal-600/20 border border-teal-500/30 rounded-full text-xs font-bold text-teal-300 uppercase tracking-wide')
+              span Welcome Offer
+            h3(class='text-2xl sm:text-3xl font-black text-white') Get 10% Off Your First Order
+            p(class='text-slate-400 text-sm max-w-md')
+              | Use code&nbsp;
+              span(class='font-mono font-bold text-white bg-white/10 px-2 py-0.5 rounded border border-white/20 select-all') WELCOME10
+              | &nbsp;at checkout.
+
+          div(class='shrink-0')
+            router-link(
+              class='inline-flex items-center gap-2 px-8 py-4 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-700/30 text-sm',
+              to='/shop'
+            )
+              span Shop Now
+              span →
+
+  section(class='py-12 bg-slate-50')
+    div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
+      div(class='flex items-end justify-between mb-8')
+        div
+          p(class='section-label') Just Landed
+          h2(class='text-2xl sm:text-3xl font-black text-slate-900 tracking-tight') New Arrivals
+        router-link(class='hidden sm:flex items-center gap-1 text-sm font-semibold text-teal-700 hover:text-teal-800 transition-colors', to='/shop')
+          span See All
+          span →
+
+      div(v-if='featuredProducts.length > 0', class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5')
+        ProductCard(v-for='product in featuredProducts.slice(0, 4)', :key='`n-${product.id}`', :product='product')
+
   WhyShopWithUs
 
-  // 7. Value & Trust Guarantee Bar
-  TrustBadges
+  section(class='py-14 bg-teal-700')
+    div(class='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center')
+      h2(class='text-2xl sm:text-3xl font-black text-white mb-3') Stay in the Loop
+      p(class='text-teal-100 text-sm mb-6') Get exclusive deals, new arrivals, and coupon codes straight to your inbox.
+      div(class='flex flex-col sm:flex-row gap-3 max-w-md mx-auto')
+        input(
+          class='flex-1 px-4 py-3 text-sm bg-white/15 border border-white/25 text-white placeholder:text-white/55 rounded-lg focus:outline-none focus:border-white focus:bg-white/20 transition-all',
+          type='email',
+          placeholder='Enter your email address'
+        )
+        button(class='px-6 py-3 bg-white text-teal-700 text-sm font-bold rounded-lg hover:bg-teal-50 transition-colors shrink-0') Subscribe
+      p(class='text-teal-200/70 text-xs mt-3') No spam, ever. Unsubscribe anytime.
 </template>
 
 <script setup>
@@ -188,36 +99,20 @@ import { api } from '@/helpers';
 const categories = ref([]);
 const featuredProducts = ref([]);
 const isLoading = ref(true);
-const heroCardsContainer = ref(null);
-
-function scrollHeroLeft() {
-  if (heroCardsContainer.value) {
-    heroCardsContainer.value.scrollBy({ left: -420, behavior: 'smooth' });
-  }
-}
-
-function scrollHeroRight() {
-  if (heroCardsContainer.value) {
-    heroCardsContainer.value.scrollBy({ left: 420, behavior: 'smooth' });
-  }
-}
 
 onMounted(async () => {
   try {
-    const [categoriesRes, productsRes] = await Promise.all([
+    const [catRes, prodRes] = await Promise.all([
       api.get('/categories'),
       api.get('/products?isFeatured=true&pageSize=8'),
     ]);
-
-    if (categoriesRes.success && categoriesRes.data) {
-      categories.value = categoriesRes.data.categories || [];
+    if (catRes.success && catRes.data) {
+      categories.value = catRes.data.categories || [];
     }
-
-    if (productsRes.success && productsRes.data) {
-      featuredProducts.value = productsRes.data.products || productsRes.data.items || [];
+    if (prodRes.success && prodRes.data) {
+      featuredProducts.value = prodRes.data.products || prodRes.data.items || [];
     }
   } catch {
-    // Graceful fallback to default curated state
   } finally {
     isLoading.value = false;
   }

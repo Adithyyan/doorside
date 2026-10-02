@@ -1,80 +1,69 @@
 <template lang="pug">
-section(class='py-6 sm:py-8 bg-[#f5f5f7] relative')
-  div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative')
-    // Horizontal Category Shelf with Navigation Controls
-    div(class='relative group')
-      div(
-        ref='scrollContainer',
-        class='flex items-center gap-6 sm:gap-9 overflow-x-auto no-scrollbar scroll-smooth py-2 px-1'
-      )
+section(class='py-12 bg-white')
+  div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
+    div(class='flex items-end justify-between mb-8')
+      div
+        p(class='section-label') Collections
+        h2(class='text-2xl sm:text-3xl font-black text-slate-900 tracking-tight') Shop By Category
+      router-link(class='hidden sm:flex items-center gap-1 text-sm font-semibold text-teal-700 hover:text-teal-800 transition-colors', to='/shop')
+        span View All
+        span →
+
+    div(v-if='displayCategories.length > 0')
+      div(class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4')
         router-link(
-          v-for='cat in displayCategories',
+          v-for='(cat, idx) in displayCategories.slice(0, 8)',
           :key='cat.id',
-          class='flex flex-col items-center shrink-0 group/item text-center cursor-pointer transition-transform hover:-translate-y-0.5',
+          class='category-img-card group relative block overflow-hidden',
+          :class='getCategoryHeight(idx)',
           :to='`/shop?category=${cat.slug}`'
         )
-          div(class='w-24 h-20 sm:w-28 sm:h-22 flex items-center justify-center p-1.5 transition-all')
-            img(
-              class='max-h-full max-w-full object-contain filter drop-shadow-sm transition-transform duration-300 group-hover/item:scale-105',
-              :src='cat.image_url || getFallbackImage(cat.name)',
-              :alt='cat.name',
-              loading='lazy'
-            )
-          span(class='text-xs font-semibold text-[#1d1d1f] mt-1.5 group-hover/item:text-[#0071e3] transition-colors')
-            | {{ cat.name }}
-
-      // Right scroll chevron arrow (Apple Store scroller button)
-      button(
-        class='absolute -right-2 top-1/2 -translate-y-1/2 apple-nav-arrow shadow-md hidden sm:flex z-10',
-        @click='scrollRight',
-        aria-label='Scroll categories right'
-      )
-        span(class='text-base font-bold leading-none') ›
+          img(
+            class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110',
+            :src='cat.image_url || getCatImage(cat.name)',
+            :alt='cat.name',
+            loading='lazy'
+          )
+          div(class='absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent')
+          div(class='absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-10')
+            p(class='text-white font-bold text-sm sm:text-base leading-tight') {{ cat.name }}
+            p(class='text-white/70 text-xs mt-0.5 hidden sm:block') Shop Now →
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
-  categories: {
-    type: Array,
-    default: () => [],
-  },
+  categories: { type: Array, default: () => [] },
 });
-
-const scrollContainer = ref(null);
 
 const fallbackList = [
-  { id: 'cat-1', name: 'Audio & Music', slug: 'audio', image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-2', name: 'Smart Wearables', slug: 'wearables', image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-3', name: 'Cases & Protection', slug: 'cases', image_url: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-4', name: 'Fast Chargers', slug: 'chargers', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-5', name: 'Desk & Lifestyle', slug: 'lifestyle', image_url: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-6', name: 'Smart Gadgets', slug: 'gadgets', image_url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300&q=80' },
-  { id: 'cat-7', name: 'Accessories', slug: 'accessories', image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80' },
+  { id: 'c1', name: 'Audio & Sound', slug: 'audio', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c2', name: 'Smart Wearables', slug: 'wearables', image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c3', name: 'Cases & Protection', slug: 'cases', image_url: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c4', name: 'Fast Chargers', slug: 'chargers', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c5', name: 'Desk & Lifestyle', slug: 'lifestyle', image_url: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c6', name: 'Smart Gadgets', slug: 'gadgets', image_url: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c7', name: 'Accessories', slug: 'accessories', image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c8', name: 'Gaming', slug: 'gaming', image_url: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80' },
 ];
 
-const displayCategories = computed(() => {
-  if (props.categories && props.categories.length > 0) {
-    return props.categories;
-  }
-  return fallbackList;
-});
+const displayCategories = computed(() =>
+  props.categories?.length > 0 ? props.categories : fallbackList
+);
 
-function getFallbackImage(name = '') {
-  const lower = name.toLowerCase();
-  if (lower.includes('audio') || lower.includes('ear') || lower.includes('head')) {
-    return 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80';
-  }
-  if (lower.includes('watch') || lower.includes('wear')) {
-    return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80';
-  }
-  return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80';
+function getCategoryHeight(idx) {
+  return idx === 0 ? 'h-52 sm:h-64 lg:row-span-2 lg:h-auto' : 'h-44 sm:h-52';
 }
 
-function scrollRight() {
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollBy({ left: 300, behavior: 'smooth' });
+function getCatImage(name = '') {
+  const lower = name.toLowerCase();
+  if (lower.includes('audio') || lower.includes('ear') || lower.includes('head')) {
+    return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
   }
+  if (lower.includes('watch') || lower.includes('wear')) {
+    return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80';
+  }
+  return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80';
 }
 </script>
