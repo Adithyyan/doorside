@@ -1,22 +1,34 @@
 <template lang="pug">
-div(class='border-b border-[#e5e5ea] bg-[#f5f5f7] py-3.5')
+section(class='bg-white border-y border-slate-100')
   div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
-    div(class='flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#6e6e73]')
-      div(class='flex items-center gap-1.5')
-        span(class='text-[#1d1d1f]') 📦
-        span Free delivery over {{ formatPrice(mainStore().freeShippingThreshold) }}
-      span(class='hidden sm:inline text-[#d2d2d7]') •
-      div(class='flex items-center gap-1.5')
-        span(class='text-[#1d1d1f]') 🔄
-        span 7-Day Easy Returns
-      span(class='hidden sm:inline text-[#d2d2d7]') •
-      div(class='flex items-center gap-1.5')
-        span(class='text-[#1d1d1f]') 🔒
-        span Secure Razorpay Checkout
-      span(class='hidden sm:inline text-[#d2d2d7]') •
-      div(class='flex items-center gap-1.5')
-        span(class='text-[#1d1d1f]') 🇮🇳
-        span Fast Dispatch Across India
+    div(class='grid grid-cols-2 lg:grid-cols-4 divide-x divide-slate-100')
+      div(class='flex items-center gap-3 py-5 px-4 sm:px-6 hover:bg-slate-50 transition-colors')
+        div(class='trust-item-icon')
+          span(class='text-lg') 🚚
+        div
+          p(class='text-sm font-bold text-slate-900') Free Delivery
+          p(class='text-xs text-slate-500 mt-0.5') Orders above {{ formatPrice(mainStore().freeShippingThreshold) }}
+
+      div(class='flex items-center gap-3 py-5 px-4 sm:px-6 hover:bg-slate-50 transition-colors')
+        div(class='trust-item-icon')
+          span(class='text-lg') 🔄
+        div
+          p(class='text-sm font-bold text-slate-900') Easy Returns
+          p(class='text-xs text-slate-500 mt-0.5') 7-day hassle-free returns
+
+      div(class='flex items-center gap-3 py-5 px-4 sm:px-6 hover:bg-slate-50 transition-colors')
+        div(class='trust-item-icon')
+          span(class='text-lg') 🔒
+        div
+          p(class='text-sm font-bold text-slate-900') Secure Payment
+          p(class='text-xs text-slate-500 mt-0.5') 100% encrypted checkout
+
+      div(class='flex items-center gap-3 py-5 px-4 sm:px-6 hover:bg-slate-50 transition-colors')
+        div(class='trust-item-icon')
+          span(class='text-lg') 💵
+        div
+          p(class='text-sm font-bold text-slate-900') Cash on Delivery
+          p(class='text-xs text-slate-500 mt-0.5') Pay when you receive
 </template>
 
 <script setup>

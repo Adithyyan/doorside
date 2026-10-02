@@ -1,110 +1,85 @@
 <template lang="pug">
-div(
-  class='group relative bg-white border border-[rgba(0,0,0,0.08)] rounded-[22px] p-5 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between'
-)
-  router-link(
-    class='relative aspect-square w-full rounded-xl overflow-hidden bg-[#fafafa] flex items-center justify-center mb-4 block',
-    :to='`/product/${product.slug}`'
-  )
-    img(
-      class='max-h-full max-w-full object-contain p-4 transition-transform duration-500 group-hover:scale-105',
-      :src='product.primary_image_url || getFallbackProductImage(product.name)',
-      :alt='product.name',
-      loading='lazy'
-    )
-    span(
-      v-if='discountPercentage > 0',
-      class='absolute top-2.5 left-2.5 bg-[#bf4800] text-white text-[11px] font-bold px-2 py-0.5 rounded-full tracking-wide shadow-2xs'
-    ) {{ discountPercentage }}% OFF
+div(class='group relative bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col')
+  router-link(class='relative block bg-slate-50 overflow-hidden', :to='`/product/${product.slug}`')
+    div(class='aspect-square flex items-center justify-center p-5')
+      img(
+        class='max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105',
+        :src='product.primary_image_url || getFallbackImage()',
+        :alt='product.name',
+        loading='lazy'
+      )
 
-  div(class='space-y-2 flex-1 flex flex-col justify-between')
-    div
-      // Color Swatch Dots (Apple Store Accessory Style)
-      div(class='flex items-center gap-1.5 py-1 mb-1')
-        span(
-          v-for='(color, cIdx) in swatchColors',
-          :key='cIdx',
-          class='color-swatch-dot cursor-pointer',
-          :style='{ backgroundColor: color }',
-          :title='`Color variant ${cIdx + 1}`'
-        )
+    div(class='absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10')
+      span(v-if='discountPercentage > 0', class='badge-sale') {{ discountPercentage }}% OFF
+      span(v-else, class='badge-new') New
 
-      // Category / New Badge
-      div(class='flex items-center gap-2')
-        span(class='apple-badge') New
-        span(class='text-2xs font-medium text-[#86868b] uppercase tracking-wider')
-          | {{ product.category_name || 'Essentials' }}
+    button(
+      class='absolute top-2.5 right-2.5 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10 text-slate-400 hover:text-red-400',
+      @click.prevent='',
+      aria-label='Wishlist'
+    ) ♡
 
-      // Product Title
-      router-link(
-        class='block text-sm font-semibold text-[#1d1d1f] line-clamp-2 mt-1 hover:text-[#0071e3] transition-colors leading-snug',
-        :to='`/product/${product.slug}`'
-      ) {{ product.name }}
+    div(
+      class='absolute bottom-0 left-0 right-0 bg-slate-900 text-white text-xs font-bold py-2.5 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-300 cursor-pointer z-10',
+      @click.prevent='quickAdd'
+    ) + Add to Cart
 
-    // Pricing & Quick Add
-    div(class='pt-3 mt-2 border-t border-[#f5f5f7] flex items-end justify-between gap-2')
+  div(class='p-4 flex-1 flex flex-col')
+    p(class='text-[11px] font-semibold text-teal-700 uppercase tracking-wider mb-1') {{ product.category_name || 'Essentials' }}
+
+    router-link(
+      class='text-sm font-semibold text-slate-900 line-clamp-2 leading-snug hover:text-teal-700 transition-colors mb-2',
+      :to='`/product/${product.slug}`'
+    ) {{ product.name }}
+
+    div(class='flex items-center gap-1.5 mb-3')
+      div(class='flex text-amber-400 text-xs') ★★★★
+      span(class='text-amber-300 text-xs') ★
+      span(class='text-xs text-slate-400') ({{ randomReviews }} reviews)
+
+    div(class='mt-auto flex items-center justify-between')
       div
-        div(class='text-xs text-[#6e6e73] font-normal') MRP
-        div(class='flex items-baseline gap-1.5')
-          span(class='text-base font-bold text-[#1d1d1f]') {{ formatPrice(product.selling_price_paisa) }}
+        div(class='flex items-baseline gap-2')
+          span(class='text-lg font-black text-slate-900') {{ formatPrice(product.selling_price_paisa) }}
           span(
             v-if='product.compare_at_price_paisa && product.compare_at_price_paisa > product.selling_price_paisa',
-            class='text-xs text-[#86868b] line-through'
+            class='text-xs text-slate-400 line-through'
           ) {{ formatPrice(product.compare_at_price_paisa) }}
-        div(class='text-[10px] text-[#86868b]') (Incl. of all taxes)
+        p(class='text-[10px] text-slate-400') Incl. of all taxes
 
       button(
-        class='w-9 h-9 rounded-full bg-[#f5f5f7] text-[#1d1d1f] flex items-center justify-center transition-all hover:bg-[#0071e3] hover:text-white active:scale-90 shrink-0 shadow-2xs',
-        @click.prevent='quickAddToCart',
-        aria-label='Add to bag',
-        title='Add to bag'
+        class='w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center hover:bg-teal-700 active:scale-90 transition-all shrink-0',
+        @click.prevent='quickAdd',
+        aria-label='Add to cart'
       )
-        IconPlus(class='w-4 h-4')
+        span(class='text-sm font-bold leading-none') +
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { mainStore } from '@/store';
 import { formatPrice } from '@/helpers';
-import IconPlus from '@/components/icons/plus.vue';
 
 const props = defineProps({
-  product: {
-    type: Object,
-    required: true,
-  },
+  product: { type: Object, required: true },
 });
 
-const swatchColors = computed(() => {
-  // Generate consistent color dots from product name
-  const name = (props.product?.name || '').toLowerCase();
-  if (name.includes('black') || name.includes('audio') || name.includes('pro')) {
-    return ['#1d1d1f', '#6e6e73', '#d2d2d7', '#253b52'];
-  }
-  if (name.includes('watch') || name.includes('wear')) {
-    return ['#202428', '#8c6d58', '#4b5563', '#b38b6d'];
-  }
-  if (name.includes('case')) {
-    return ['#5c242e', '#232f3e', '#e3d7bf', '#434c44', '#1f2022'];
-  }
-  return ['#1d1d1f', '#0071e3', '#e5e5ea', '#a28b79'];
-});
+const randomReviews = Math.floor(Math.random() * 120) + 20;
 
 const discountPercentage = computed(() => {
   if (!props.product.compare_at_price_paisa || props.product.compare_at_price_paisa <= props.product.selling_price_paisa) {
     return 0;
   }
-  const diff = props.product.compare_at_price_paisa - props.product.selling_price_paisa;
-  return Math.round((diff / props.product.compare_at_price_paisa) * 100);
+  return Math.round(((props.product.compare_at_price_paisa - props.product.selling_price_paisa) / props.product.compare_at_price_paisa) * 100);
 });
 
-function getFallbackProductImage(name = '') {
+function getFallbackImage() {
   return 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=400&q=80';
 }
 
-function quickAddToCart() {
+function quickAdd() {
   mainStore().addItem(props.product, null, 1);
-  mainStore().success(`Added ${props.product.name} to your bag!`);
+  mainStore().success(`${props.product.name} added to cart!`);
   mainStore().openDrawer();
 }
 </script>

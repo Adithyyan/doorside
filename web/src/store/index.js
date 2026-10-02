@@ -289,12 +289,22 @@ export const main = defineStore('main', () => {
   }
 
   function applyThemeVariables(branding) {
-    if (!branding) return;
+    if (!branding) {
+      return;
+    }
     const root = document.documentElement;
-    if (branding.primary_color) root.style.setProperty('--color-primary', branding.primary_color);
-    if (branding.accent_color) root.style.setProperty('--color-accent', branding.accent_color);
-    if (branding.secondary_color) root.style.setProperty('--color-secondary', branding.secondary_color);
-    if (branding.background_color) root.style.setProperty('--color-background', branding.background_color);
+    if (branding.primary_color) {
+      root.style.setProperty('--color-primary', branding.primary_color);
+    }
+    if (branding.accent_color) {
+      root.style.setProperty('--color-accent', branding.accent_color);
+    }
+    if (branding.secondary_color) {
+      root.style.setProperty('--color-secondary', branding.secondary_color);
+    }
+    if (branding.background_color) {
+      root.style.setProperty('--color-background', branding.background_color);
+    }
   }
 
   async function getSettings() {
