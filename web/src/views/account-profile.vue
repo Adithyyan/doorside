@@ -1,199 +1,114 @@
 <template lang="pug">
 StoreLayout
-  div(class='bg-slate-50 min-h-screen py-10 sm:py-14')
+  div(class='bg-page min-h-screen py-10 sm:py-14')
     div(class='max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8')
-      div(class='flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6')
+      div(class='flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-soft pb-6')
         div
-          h1(class='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900') Profile & Addresses
-          p(class='text-xs text-slate-500 mt-1')
+          h1(class='heading-lg text-ink') Profile & Addresses
+          p(class='text-fine text-muted uppercase tracking-editorial mt-1')
             | Manage your personal details and saved delivery destinations.
         
         div(class='flex items-center gap-2.5')
-          router-link(class='px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors', to='/account/orders')
+          router-link(class='btn-outline px-4 py-2', to='/account/orders')
             | View Orders
-          button(class='px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-red-200 text-red-600 hover:bg-red-50 transition-colors', @click='handleLogout')
+          button(class='btn-danger', @click='handleLogout')
             | Sign Out
 
-      div(class='flex gap-6 border-b border-slate-200 text-sm font-semibold')
-        router-link(class='pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800', to='/account/orders') Order History
-        router-link(class='pb-3 border-b-2 border-teal-600 text-teal-700', to='/account/profile') Addresses & Details
+      div(class='flex gap-8 border-b border-soft')
+        router-link(class='tab-editorial', to='/account/orders') Order History
+        router-link(class='tab-editorial tab-editorial-active', to='/account/profile') Addresses & Details
 
       div(class='grid grid-cols-1 gap-8 lg:grid-cols-3 items-start')
         div(class='lg:col-span-1')
-          div(class='p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-5')
-            h2(class='text-base font-bold text-slate-900') Personal Details
+          div(class='panel-editorial p-6 space-y-5')
+            h2(class='heading-sm text-ink') Personal Details
             form(class='space-y-4', @submit.prevent='updateProfile')
               div(class='space-y-1')
-                label(class='block text-xs font-semibold text-slate-700') Full Name
-                input(
-                  class='w-full py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  v-model='profileForm.name',
-                  required
-                )
+                label(class='label-ink block') Full Name
+                input(class='input-base', type='text', v-model='profileForm.name', required)
               div(class='space-y-1')
-                label(class='block text-xs font-semibold text-slate-700') Email Address
-                input(
-                  class='w-full py-2.5 px-3.5 rounded-xl border border-slate-200 text-xs text-slate-400 bg-slate-100 cursor-not-allowed',
-                  type='email',
-                  :value='mainStore().customer?.email',
-                  disabled
-                )
-                span(class='text-[10px] text-slate-400') Registered email reference.
+                label(class='label-ink block') Email Address
+                input(class='input-base bg-surface text-muted cursor-not-allowed', type='email', :value='mainStore().customer?.email', disabled)
+                span(class='text-fine text-muted uppercase tracking-editorial') Registered email reference.
               div(class='space-y-1')
-                label(class='block text-xs font-semibold text-slate-700') Mobile Phone
-                input(
-                  class='w-full py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='tel',
-                  v-model='profileForm.phone',
-                  placeholder='10-digit mobile'
-                )
-              button(
-                class='w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-md active:scale-98 mt-2',
-                type='submit',
-                :disabled='isUpdatingProfile'
-              )
+                label(class='label-ink block') Mobile Phone
+                input(class='input-base', type='tel', v-model='profileForm.phone', placeholder='10-digit mobile')
+              button(class='btn-primary w-full py-3 mt-2 disabled:opacity-50', type='submit', :disabled='isUpdatingProfile')
                 span(v-if='!isUpdatingProfile') Save Changes
                 span(v-else) Saving...
 
         div(class='lg:col-span-2')
-          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-6')
+          div(class='panel-editorial p-6 sm:p-8 space-y-6')
             div(class='flex items-center justify-between')
               div
-                h2(class='text-base font-bold text-slate-900') Saved Delivery Destinations
-                p(class='text-xs text-slate-500') Pre-filled at checkout for faster ordering
-              button(
-                class='px-4 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors',
-                @click='showAddressForm = !showAddressForm'
-              )
+                h2(class='heading-sm text-ink') Saved Delivery Destinations
+                p(class='text-fine text-muted uppercase tracking-editorial') Pre-filled at checkout for faster ordering
+              button(class='btn-outline px-4 py-2 text-fine', @click='showAddressForm = !showAddressForm')
                 span(v-if='!showAddressForm') + Add New Address
                 span(v-else) Cancel
 
-            div(v-if='showAddressForm', class='bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200 space-y-4')
-              h3(class='text-xs font-bold text-slate-900 uppercase tracking-wider') New Delivery Address
+            div(v-if='showAddressForm', class='bg-page-alt p-5 sm:p-6 border border-soft space-y-4')
+              h3(class='label-ink') New Delivery Address
               form(class='space-y-3.5', @submit.prevent='saveNewAddress')
                 div(class='grid grid-cols-1 gap-3 sm:grid-cols-2')
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') Recipient Name *
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='text',
-                      v-model='addressForm.name',
-                      required
-                    )
+                    label(class='label-ink block') Recipient Name *
+                    input(class='input-base', type='text', v-model='addressForm.name', required)
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') 10-Digit Mobile *
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='tel',
-                      v-model='addressForm.phone',
-                      maxlength='10',
-                      placeholder='9876543210',
-                      required
-                    )
+                    label(class='label-ink block') 10-Digit Mobile *
+                    input(class='input-base', type='tel', v-model='addressForm.phone', maxlength='10', placeholder='9876543210', required)
 
                 div(class='space-y-1')
-                  label(class='block text-[11px] font-semibold text-slate-700') House / Flat No., Street, Building *
-                  input(
-                    class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                    type='text',
-                    v-model='addressForm.houseStreet',
-                    required
-                  )
+                  label(class='label-ink block') House / Flat No., Street, Building *
+                  input(class='input-base', type='text', v-model='addressForm.houseStreet', required)
 
                 div(class='grid grid-cols-1 gap-3 sm:grid-cols-2')
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') Area / Sector / Colony
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='text',
-                      v-model='addressForm.area'
-                    )
+                    label(class='label-ink block') Area / Sector / Colony
+                    input(class='input-base', type='text', v-model='addressForm.area')
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') Landmark
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='text',
-                      v-model='addressForm.landmark',
-                      placeholder='e.g. Near City Hospital'
-                    )
+                    label(class='label-ink block') Landmark
+                    input(class='input-base', type='text', v-model='addressForm.landmark', placeholder='e.g. Near City Hospital')
 
                 div(class='grid grid-cols-1 gap-3 sm:grid-cols-3')
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') PIN Code *
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='text',
-                      v-model='addressForm.pincode',
-                      maxlength='6',
-                      placeholder='6 digits',
-                      required
-                    )
+                    label(class='label-ink block') PIN Code *
+                    input(class='input-base', type='text', v-model='addressForm.pincode', maxlength='6', placeholder='6 digits', required)
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') City *
-                    input(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      type='text',
-                      v-model='addressForm.city',
-                      required
-                    )
+                    label(class='label-ink block') City *
+                    input(class='input-base', type='text', v-model='addressForm.city', required)
                   div(class='space-y-1')
-                    label(class='block text-[11px] font-semibold text-slate-700') State *
-                    select(
-                      class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:border-teal-600 focus:outline-none',
-                      v-model='addressForm.state',
-                      required
-                    )
+                    label(class='label-ink block') State *
+                    select(class='select-base w-full', v-model='addressForm.state', required)
                       option(value='', disabled) Select State
                       option(v-for='state in indianStates', :key='state', :value='state') {{ state }}
 
                 div(class='flex items-center gap-2 pt-2')
-                  input(
-                    id='isDefault',
-                    class='rounded text-teal-600 focus:ring-0',
-                    type='checkbox',
-                    v-model='addressForm.isDefault'
-                  )
-                  label(class='text-xs text-slate-700', for='isDefault') Set as default delivery destination
+                  input(id='isDefault', class='w-3.5 h-3.5 border border-soft rounded-none cursor-pointer', type='checkbox', v-model='addressForm.isDefault')
+                  label(class='text-fine text-muted uppercase tracking-editorial cursor-pointer', for='isDefault') Set as default delivery destination
 
                 div(class='flex justify-end gap-2 pt-3')
-                  button(
-                    class='px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-200 transition-colors',
-                    type='button',
-                    @click='showAddressForm = false'
-                  ) Cancel
-                  button(
-                    class='px-5 py-2 text-xs font-semibold rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors',
-                    type='submit',
-                    :disabled='isSavingAddress'
-                  )
+                  button(class='btn-outline px-4 py-2 text-fine', type='button', @click='showAddressForm = false') Cancel
+                  button(class='btn-primary px-5 py-2 text-fine', type='submit', :disabled='isSavingAddress')
                     span(v-if='!isSavingAddress') Save Address
                     span(v-else) Saving...
 
             div(v-if='addresses.length > 0', class='space-y-3')
-              div(
-                v-for='addr in addresses',
-                :key='addr.id',
-                class='p-5 rounded-xl border transition-all',
-                :class='addr.is_default ? "border-teal-600 bg-teal-50/30" : "bg-white border-slate-200"'
-              )
+              div(v-for='addr in addresses', :key='addr.id', class='p-5 border transition-all', :class='addr.is_default ? "border-ink bg-surface" : "bg-white border-soft"')
                 div(class='flex items-start justify-between gap-3')
                   div(class='space-y-1')
                     div(class='flex items-center gap-2 mb-1')
-                      h4(class='text-xs font-bold text-slate-900') {{ addr.name }}
-                      span(v-if='addr.is_default', class='text-[10px] bg-teal-700 text-white font-bold rounded-full px-2 py-0.5') DEFAULT
-                    p(class='text-xs text-slate-600') {{ addr.house_street }}{{ addr.area ? ', ' + addr.area : '' }}
-                    p(v-if='addr.landmark', class='text-xs text-slate-600') Landmark: {{ addr.landmark }}
-                    p(class='text-xs text-slate-600') {{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}
-                    p(class='text-xs text-slate-400 pt-1') Phone: {{ addr.phone }}
+                      h4(class='text-cap font-bold text-ink') {{ addr.name }}
+                      span(v-if='addr.is_default', class='badge-status-success') DEFAULT
+                    p(class='text-cap text-soft') {{ addr.house_street }}{{ addr.area ? ', ' + addr.area : '' }}
+                    p(v-if='addr.landmark', class='text-fine text-muted') Landmark: {{ addr.landmark }}
+                    p(class='text-cap text-soft') {{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}
+                    p(class='text-fine text-muted pt-1') Phone: {{ addr.phone }}
                   
-                  button(
-                    class='text-xs text-red-600 hover:underline font-medium px-2 py-1',
-                    @click='deleteAddress(addr.id)'
-                  ) Remove
+                  button(class='btn-danger', @click='deleteAddress(addr.id)') Remove
 
-            div(v-else-if='!isLoadingAddresses', class='text-center py-12 bg-slate-50 rounded-2xl border border-slate-100')
-              p(class='text-xs text-slate-500') No saved addresses found. Add an address to speed up your checkout.
+            div(v-else-if='!isLoadingAddresses', class='panel-editorial text-center py-12')
+              p(class='text-cap text-muted uppercase tracking-editorial') No saved addresses found. Add an address to speed up your checkout.
 </template>
 
 <script setup>

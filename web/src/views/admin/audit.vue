@@ -6,10 +6,7 @@ AdminLayout
         h1(class='text-2xl font-black text-slate-900 tracking-tight') System Audit Trail
         p(class='text-xs text-slate-500 mt-1') Immutable security and change history log for store operations and fulfillment.
 
-      button(
-        class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold'
-        @click='getAuditLogs'
-      ) 🔄 Refresh Logs
+      button(class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold' @click='getAuditLogs') 🔄 Refresh Logs
 
     div(class='bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden')
       div(class='overflow-x-auto')
@@ -22,11 +19,7 @@ AdminLayout
               th(class='px-6 py-3.5') Admin / Operator
               th(class='px-6 py-3.5') Details
           tbody(class='divide-y divide-slate-100 text-xs')
-            tr(
-              v-for='log in logs'
-              :key='log.id'
-              class='transition-colors hover:bg-slate-50'
-            )
+            tr(v-for='log in logs' :key='log.id' class='transition-colors hover:bg-slate-50')
               td(class='py-4 px-6 whitespace-nowrap text-slate-500')
                 | {{ formatDate(log.created_at, true) }}
 
@@ -43,10 +36,7 @@ AdminLayout
                 div(class='text-2xs text-slate-400') IP: {{ log.ip_address || 'Internal' }}
 
               td(class='py-4 px-6')
-                div(
-                  class='text-2xs font-mono max-w-xs truncate text-slate-600'
-                  :title='JSON.stringify(log.new_values || log.old_values)'
-                )
+                div(class='text-2xs font-mono max-w-xs truncate text-slate-600' :title='JSON.stringify(log.new_values || log.old_values)')
                   span(v-if='log.new_values') {{ JSON.stringify(log.new_values) }}
                   span(v-else-if='log.old_values') {{ JSON.stringify(log.old_values) }}
                   span(v-else, class='text-slate-400') No payload recorded
@@ -62,16 +52,8 @@ AdminLayout
       div(v-if='totalPages > 1', class='p-4 border-t border-slate-100 flex items-center justify-between')
         span(class='text-xs text-slate-500') Page {{ currentPage }} of {{ totalPages }} ({{ totalLogs }} records)
         div(class='flex items-center gap-2')
-          button(
-            class='px-3 py-1 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-40'
-            :disabled='currentPage <= 1'
-            @click='changePage(currentPage - 1)'
-          ) Previous
-          button(
-            class='px-3 py-1 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-40'
-            :disabled='currentPage >= totalPages'
-            @click='changePage(currentPage + 1)'
-          ) Next
+          button(class='px-3 py-1 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-40' :disabled='currentPage <= 1' @click='changePage(currentPage - 1)') Previous
+          button(class='px-3 py-1 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-40' :disabled='currentPage >= totalPages' @click='changePage(currentPage + 1)') Next
 </template>
 
 <script setup>

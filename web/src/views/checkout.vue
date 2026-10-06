@@ -1,190 +1,115 @@
 <template lang="pug">
 StoreLayout
-  div(class='bg-slate-50 min-h-screen py-10 sm:py-14')
+  div(class='bg-page min-h-screen py-10 sm:py-14')
     div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8')
-      div(class='border-b border-slate-200 pb-4')
-        h1(class='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900')
-          | Express Checkout
-        p(class='text-xs text-slate-500 mt-1')
-          | Fast, encrypted checkout with instant dispatch across India.
+      div(class='border-b border-soft pb-4')
+        h1(class='heading-lg text-ink') Express Checkout
+        p(class='text-fine text-muted uppercase tracking-editorial mt-1')
+          | Fast, encrypted checkout with instant nationwide dispatch.
 
       div(class='grid grid-cols-1 gap-10 lg:grid-cols-12 items-start')
         div(class='space-y-6 lg:col-span-7')
-          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
+          div(class='panel-editorial p-6 sm:p-8 space-y-5')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 1
-              h2(class='text-base sm:text-lg font-bold text-slate-900') Contact Information
+              span(class='step-badge') 1
+              h2(class='heading-sm text-ink') Contact Information
             
             div(class='grid grid-cols-1 gap-4 sm:grid-cols-2')
-              div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Full Name *
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='Enter your full name',
-                  v-model='form.customerName',
-                  required
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Mobile Phone * (for delivery SMS)
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='tel',
-                  placeholder='10-digit mobile number',
-                  maxlength='10',
-                  v-model='form.customerPhone',
-                  required
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Email Address (for order receipts)
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='email',
-                  placeholder='name@example.com',
-                  v-model='form.customerEmail'
-                )
+              div(class='sm:col-span-2 space-y-1')
+                label(class='label-ink block') Full Name *
+                input(class='input-base', type='text', placeholder='Enter your full name', v-model='form.customerName', required)
+              div(class='space-y-1')
+                label(class='label-ink block') Mobile Phone * (for delivery SMS)
+                input(class='input-base', type='tel', placeholder='10-digit mobile number', maxlength='10', v-model='form.customerPhone', required)
+              div(class='space-y-1')
+                label(class='label-ink block') Email Address (for order receipts)
+                input(class='input-base', type='email', placeholder='name@example.com', v-model='form.customerEmail')
 
-          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
+          div(class='panel-editorial p-6 sm:p-8 space-y-5')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 2
-              h2(class='text-base sm:text-lg font-bold text-slate-900') Shipping Address
+              span(class='step-badge') 2
+              h2(class='heading-sm text-ink') Shipping Address
             
             div(class='grid grid-cols-1 gap-4 sm:grid-cols-2')
-              div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') House No., Building, Street *
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='Flat / Door no., Apartment / Street',
-                  v-model='form.addressLine1',
-                  required
-                )
-              div(class='sm:col-span-2')
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Area / Colony / Landmark (Optional)
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='Nearby landmark or locality',
-                  v-model='form.addressLine2'
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') 6-Digit PIN Code *
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='6-digit pincode',
-                  maxlength='6',
-                  v-model='form.pincode',
-                  required
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') City / Town *
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='City or town',
-                  v-model='form.city',
-                  required
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') State *
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-                  type='text',
-                  placeholder='State',
-                  v-model='form.state',
-                  required
-                )
-              div
-                label(class='block text-xs font-semibold text-slate-700 mb-1.5') Country
-                input(
-                  class='w-full px-4 py-2.5 text-xs bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed',
-                  type='text',
-                  value='India',
-                  disabled
-                )
+              div(class='sm:col-span-2 space-y-1')
+                label(class='label-ink block') House No., Building, Street *
+                input(class='input-base', type='text', placeholder='Flat / Door no., Apartment / Street', v-model='form.addressLine1', required)
+              div(class='sm:col-span-2 space-y-1')
+                label(class='label-ink block') Area / Colony / Landmark (Optional)
+                input(class='input-base', type='text', placeholder='Nearby landmark or locality', v-model='form.addressLine2')
+              div(class='space-y-1')
+                label(class='label-ink block') 6-Digit PIN Code *
+                input(class='input-base', type='text', placeholder='6-digit pincode', maxlength='6', v-model='form.pincode', required)
+              div(class='space-y-1')
+                label(class='label-ink block') City / Town *
+                input(class='input-base', type='text', placeholder='City or town', v-model='form.city', required)
+              div(class='space-y-1')
+                label(class='label-ink block') State *
+                input(class='input-base', type='text', placeholder='State', v-model='form.state', required)
+              div(class='space-y-1')
+                label(class='label-ink block') Country
+                input(class='input-base bg-surface text-muted cursor-not-allowed', type='text', v-model='form.country', disabled)
 
-          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs')
+          div(class='panel-editorial p-6 sm:p-8 space-y-5')
             div(class='flex items-center gap-3')
-              span(class='w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center') 3
-              h2(class='text-base sm:text-lg font-bold text-slate-900') Payment Method
+              span(class='step-badge') 3
+              h2(class='heading-sm text-ink') Payment Method
             
-            div(class='space-y-3')
-              label(
-                v-if='mainStore().prepaidEnabled',
-                class='flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all',
-                :class='form.paymentMethod === "razorpay" ? "border-teal-600 bg-teal-50/40 shadow-xs" : "border-slate-200 hover:border-slate-400"'
-              )
-                input(class='mt-1 text-teal-600 focus:ring-0', type='radio', value='razorpay', v-model='form.paymentMethod')
-                div(class='flex-1')
-                  div(class='flex items-center justify-between')
-                    span(class='text-xs font-bold text-slate-900') Online Payment (UPI, Cards, NetBanking, EMI)
-                    span(class='text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full') Recommended
-                  p(class='text-2xs text-slate-500 mt-1')
-                    | Instant & secure checkout powered by Razorpay. Zero transaction fees.
-              
-              label(
-                v-if='mainStore().codEnabled',
-                class='flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all',
-                :class='form.paymentMethod === "cod" ? "border-teal-600 bg-teal-50/40 shadow-xs" : "border-slate-200 hover:border-slate-400"'
-              )
-                input(class='mt-1 text-teal-600 focus:ring-0', type='radio', value='cod', v-model='form.paymentMethod')
-                div(class='flex-1')
-                  div(class='flex items-center justify-between')
-                    span(class='text-xs font-bold text-slate-900') Cash on Delivery (COD)
-                    span(class='text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full') Pay at Doorstep
-                  p(class='text-2xs text-slate-500 mt-1')
-                    | Pay in cash or UPI directly to the courier upon delivery at your doorstep.
+            div(class='grid grid-cols-1 sm:grid-cols-2 gap-3')
+              div(class='p-4 border cursor-pointer transition-all', :class='form.paymentMethod === "razorpay" ? "border-ink bg-surface" : "border-soft bg-white hover:border-ink"', @click='form.paymentMethod = "razorpay"')
+                div(class='flex items-center justify-between mb-2')
+                  span(class='heading-xs text-ink') Online Payment
+                  span(v-if='form.paymentMethod === "razorpay"', class='text-ink font-bold text-xs') ●
+                  span(v-else, class='text-muted text-xs') ○
+                p(class='text-fine text-muted uppercase tracking-editorial') UPI, Cards, NetBanking, EMI
+                span(class='badge-status-pending mt-2') Recommended
 
-        div(class='space-y-6 lg:col-span-5')
-          div(class='p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 space-y-5 shadow-xs sticky top-20')
-            h2(class='text-base font-bold text-slate-900') Order Summary ({{ mainStore().totalItemsCount }})
+              div(v-if='mainStore().codEnabled', class='p-4 border cursor-pointer transition-all', :class='form.paymentMethod === "cod" ? "border-ink bg-surface" : "border-soft bg-white hover:border-ink"', @click='form.paymentMethod = "cod"')
+                div(class='flex items-center justify-between mb-2')
+                  span(class='heading-xs text-ink') Cash on Delivery
+                  span(v-if='form.paymentMethod === "cod"', class='text-ink font-bold text-xs') ●
+                  span(v-else, class='text-muted text-xs') ○
+                p(class='text-fine text-muted uppercase tracking-editorial') Pay cash or UPI upon delivery
+                span(class='badge-status-pending mt-2') Verified Indian Addresses
 
-            div(class='divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1 no-scrollbar')
-              div(
-                v-for='item in mainStore().items',
-                :key='`${item.productId}-${item.variantId}`',
-                class='py-3 flex items-center gap-3'
-              )
-                div(class='w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 shrink-0 overflow-hidden')
-                  img(
-                    class='max-h-full max-w-full object-contain',
-                    :src='item.product.primary_image_url || "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=100&q=80"',
-                    :alt='item.product.name'
-                  )
-                div(class='flex-1 min-w-0')
-                  p(class='text-xs font-bold text-slate-900 truncate') {{ item.product.name }}
-                  p(class='text-2xs text-slate-500') Qty: {{ item.quantity }}
-                span(class='text-xs font-bold text-slate-900')
-                  | {{ formatPrice((item.variant?.sellingPricePaisa || item.product.selling_price_paisa) * item.quantity) }}
+        div(class='space-y-5 lg:col-span-5')
+          div(class='panel-editorial p-6 space-y-5')
+            h2(class='heading-sm text-ink') Order Summary ({{ mainStore().totalItemsCount }})
 
-            div(class='space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-500')
+            div(class='divide-y divide-soft max-h-80 overflow-y-auto pr-1')
+              div(v-for='item in mainStore().items', :key='item.id', class='py-3 flex items-center justify-between gap-3')
+                div(class='flex items-center gap-3 min-w-0')
+                  div(class='w-14 h-16 bg-surface border border-soft flex items-center justify-center p-1 shrink-0 overflow-hidden')
+                    img(class='h-full w-full object-cover', :src='item.product?.primary_image_url || "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=150&q=80"', :alt='item.product?.name')
+                  div(class='min-w-0')
+                    h4(class='text-cap font-semibold text-ink line-clamp-1') {{ item.product?.name }}
+                    p(class='text-fine text-muted uppercase tracking-editorial') Qty: {{ item.quantity }}
+                
+                span(class='text-cap font-bold text-ink shrink-0')
+                  | {{ formatPrice(item.price * item.quantity) }}
+
+            div(class='space-y-2 pt-3 border-t border-soft text-cap text-muted uppercase tracking-editorial')
               div(class='flex justify-between')
                 span Subtotal
-                span(class='font-medium text-slate-900') {{ formatPrice(mainStore().subtotalPaisa) }}
-              div(v-if='mainStore().discountPaisa > 0', class='flex justify-between text-teal-700')
-                span Coupon Discount
-                span(class='font-semibold') -{{ formatPrice(mainStore().discountPaisa) }}
+                span(class='text-ink font-semibold') {{ formatPrice(mainStore().subtotalPaisa) }}
+              div(v-if='mainStore().discountPaisa > 0', class='flex justify-between text-ink font-semibold')
+                span Coupon Savings
+                span −{{ formatPrice(mainStore().discountPaisa) }}
               div(class='flex justify-between')
                 span Shipping
-                span(v-if='mainStore().shippingPaisa === 0', class='text-teal-700 font-medium') FREE
-                span(v-else, class='text-slate-900 font-medium') {{ formatPrice(mainStore().shippingPaisa) }}
-              
-              div(class='flex justify-between text-base font-bold text-slate-900 pt-3 border-t border-slate-100')
+                span(v-if='mainStore().shippingPaisa === 0', class='text-ink font-bold') FREE
+                span(v-else, class='text-ink font-semibold') {{ formatPrice(mainStore().shippingPaisa) }}
+              div(class='flex justify-between text-body-sm font-bold text-ink pt-3 border-t border-soft')
                 span Total Amount
                 span {{ formatPrice(mainStore().totalPaisa) }}
 
-            button(
-              class='w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl transition-all shadow-md active:scale-98 disabled:opacity-50',
-              :disabled='isSubmitting || mainStore().items.length === 0',
-              @click='handlePlaceOrder'
-            )
-              span(v-if='isSubmitting') Placing Order...
-              span(v-else-if='form.paymentMethod === "cod"') Complete Order with COD →
+            button(class='btn-primary w-full py-4 text-center justify-center disabled:opacity-50', :disabled='isSubmitting', @click='handlePlaceOrder')
+              span(v-if='isSubmitting') Processing Order...
+              span(v-else-if='form.paymentMethod === "cod"') Confirm Cash on Delivery Order →
               span(v-else) Pay {{ formatPrice(mainStore().totalPaisa) }} Securely →
 
-            p(class='text-center text-[11px] text-slate-400 leading-tight')
-              | By clicking above, you confirm your order and agree to our Terms of Sale and Return Guidelines.
+            div(class='p-3 bg-surface border border-soft text-center text-fine text-muted uppercase tracking-editorial')
+              | 🔒 256-Bit SSL Encrypted Checkout · Instant Tracking SMS
 </template>
 
 <script setup>
@@ -213,7 +138,7 @@ const form = ref({
 
 onMounted(() => {
   if (mainStore().items.length === 0) {
-    mainStore().info('Your cart is empty. Add items before checking out.');
+    mainStore().info('Your bag is empty. Add items before checking out.');
     router.push('/shop');
   }
 });
@@ -243,7 +168,7 @@ async function handlePlaceOrder() {
   try {
     const payload = {
       items: mainStore().items.map((it) => ({
-        productId: it.productId,
+        productId: it.productId || it.product?.id,
         variantId: it.variantId,
         quantity: it.quantity,
       })),
@@ -259,7 +184,7 @@ async function handlePlaceOrder() {
         country: 'India',
       },
       paymentMethod: form.value.paymentMethod,
-      couponCode: mainStore().couponCode || undefined,
+      couponCode: mainStore().appliedCoupon?.code || undefined,
     };
 
     const res = await api.post('/checkout', payload);
