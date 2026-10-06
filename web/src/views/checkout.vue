@@ -201,7 +201,9 @@ async function handlePlaceOrder() {
 
       await loadRazorpayScript();
 
-      if (!window.Razorpay) {
+      const isMockGateway = !window.Razorpay || res.data.gatewayOrderId?.startsWith('mock_') || res.data.keyId?.includes('placeholder');
+
+      if (isMockGateway) {
         mainStore().success('Order created! Confirming payment...');
         await api.post('/payments/verify', {
           gatewayOrderId: res.data.gatewayOrderId,
