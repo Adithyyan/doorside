@@ -3,30 +3,16 @@ AdminLayout
   div(v-if='order', class='space-y-8')
     div(class='flex flex-col justify-between gap-4 sm:flex-row sm:items-center')
       div(class='flex items-center gap-3')
-        router-link(
-          class='p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50',
-          to='/admin/orders',
-          title='Back to Orders'
-        ) ←
+        router-link(class='p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50', to='/admin/orders', title='Back to Orders') ←
         div
           div(class='flex items-center gap-2')
             h1(class='text-2xl font-black text-slate-900') {{ order.order_number }}
-            span(
-              class='text-xs font-bold rounded-full px-2.5 py-0.5',
-              :class='getStatusBadgeClass(order.order_status)'
-            ) {{ order.order_status }}
+            span(class='text-xs font-bold rounded-full px-2.5 py-0.5', :class='getStatusBadgeClass(order.order_status)') {{ order.order_status }}
           p(class='text-2xs text-slate-400') Placed on {{ formatDate(order.created_at, true) }}
 
       div(class='flex items-center gap-2')
-        button(
-          class='px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50',
-          @click='getOrder'
-        ) 🔄 Refresh
-        a(
-          class='px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800',
-          :href='`/track-order?orderNumber=${order.order_number}&contact=${order.customer_phone || order.customer_email}`',
-          target='_blank'
-        ) 🔍 View Tracking Page ↗
+        button(class='px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50', @click='getOrder') 🔄 Refresh
+        a(class='px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800', :href='`/track-order?orderNumber=${order.order_number}&contact=${order.customer_phone || order.customer_email}`', target='_blank') 🔍 View Tracking Page ↗
 
     div(class='bg-white rounded-3xl border-2 border-amber-300 p-6 shadow-sm')
       div(class='flex items-center justify-between border-b border-slate-100 pb-4 mb-6')
@@ -38,10 +24,7 @@ AdminLayout
         
         div(class='flex items-center gap-2')
           span(class='text-xs font-bold text-slate-500') Fulfillment:
-          span(
-            class='text-xs font-black py-1 px-2.5 rounded-full',
-            :class='getFulfillmentBadgeClass(order.fulfillment_status)'
-          ) {{ order.fulfillment_status }}
+          span(class='text-xs font-black py-1 px-2.5 rounded-full', :class='getFulfillmentBadgeClass(order.fulfillment_status)') {{ order.fulfillment_status }}
 
       div(class='grid grid-cols-1 gap-6 lg:grid-cols-3')
         div(class='bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between')
@@ -74,10 +57,7 @@ AdminLayout
                 span(class='font-mono font-black text-slate-950') {{ order.shipping_pincode }}
 
           div(class='pt-4 mt-4 border-t border-slate-200')
-            button(
-              class='w-full rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors py-2.5 hover:bg-slate-800',
-              @click='copyCustomerAddress'
-            )
+            button(class='w-full rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors py-2.5 hover:bg-slate-800', @click='copyCustomerAddress')
               span(v-if='!copiedAddress') 📋 Copy Details For Meesho / Supplier
               span(v-else, class='text-amber-400') ✅ Copied to Clipboard!
 
@@ -91,36 +71,18 @@ AdminLayout
               | Open each supplier product link, order with copied customer address, then save the supplier reference.
 
             div(v-if='order.items && order.items.length > 0', class='space-y-2 mb-4')
-              div(
-                v-for='item in order.items',
-                :key='item.id',
-                class='p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-between'
-              )
+              div(v-for='item in order.items', :key='item.id', class='p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-between')
                 div(class='truncate pr-2')
                   p(class='text-2xs font-bold text-slate-900 truncate') {{ item.product_title }}
                   p(class='text-2xs text-slate-400') Qty: {{ item.quantity }} • SKU: {{ item.sku || 'N/A' }}
-                a(
-                  v-if='item.supplier_url',
-                  class='px-2 py-1 rounded bg-amber-100 text-amber-900 text-2xs font-bold whitespace-nowrap hover:bg-amber-200',
-                  :href='item.supplier_url',
-                  target='_blank'
-                ) Open Supplier ↗
+                a(v-if='item.supplier_url', class='px-2 py-1 rounded bg-amber-100 text-amber-900 text-2xs font-bold whitespace-nowrap hover:bg-amber-200', :href='item.supplier_url', target='_blank') Open Supplier ↗
 
             div
               label(class='block text-2xs font-bold text-slate-700 mb-1') Supplier Order ID (Meesho #)
-              input(
-                class='w-full px-3 py-2 rounded-lg border border-slate-200 text-xs bg-white font-mono',
-                type='text',
-                v-model='supplierOrderId',
-                placeholder='e.g. MSH-984729482'
-              )
+              input(class='w-full px-3 py-2 rounded-lg border border-slate-200 text-xs bg-white font-mono', type='text', v-model='supplierOrderId', placeholder='e.g. MSH-984729482')
 
           div(class='pt-4 mt-4 border-t border-slate-200')
-            button(
-              class='w-full rounded-xl bg-blue-600 text-white text-xs font-bold transition-colors py-2.5 hover:bg-blue-700',
-              @click='recordSupplierOrder',
-              :disabled='isSubmittingSupplier'
-            )
+            button(class='w-full rounded-xl bg-blue-600 text-white text-xs font-bold transition-colors py-2.5 hover:bg-blue-700', @click='recordSupplierOrder', :disabled='isSubmittingSupplier')
               span(v-if='!isSubmittingSupplier') Record Supplier Order Placed 🛒
               span(v-else) Saving...
 
@@ -133,10 +95,7 @@ AdminLayout
             div(class='space-y-2')
               div
                 label(class='block text-2xs font-bold text-slate-700 mb-1') Courier / Logistics Partner
-                select(
-                  class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white',
-                  v-model='courierName'
-                )
+                select(class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white', v-model='courierName')
                   option(value='') Select Courier
                   option(value='Delhivery') Delhivery
                   option(value='BlueDart') BlueDart
@@ -149,28 +108,14 @@ AdminLayout
 
               div
                 label(class='block text-2xs font-bold text-slate-700 mb-1') Tracking / AWB Number
-                input(
-                  class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-mono',
-                  type='text',
-                  v-model='trackingNumber',
-                  placeholder='e.g. DEL123456789'
-                )
+                input(class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-mono', type='text', v-model='trackingNumber', placeholder='e.g. DEL123456789')
 
               div
                 label(class='block text-2xs font-bold text-slate-700 mb-1') Tracking URL (Optional)
-                input(
-                  class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white',
-                  type='url',
-                  v-model='trackingUrl',
-                  placeholder='https://...'
-                )
+                input(class='w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white', type='url', v-model='trackingUrl', placeholder='https://...')
 
           div(class='pt-4 mt-4 border-t border-slate-200')
-            button(
-              class='w-full rounded-xl bg-emerald-600 text-white text-xs font-bold transition-colors py-2.5 hover:bg-emerald-700',
-              @click='saveTrackingInfo',
-              :disabled='isSubmittingTracking'
-            )
+            button(class='w-full rounded-xl bg-emerald-600 text-white text-xs font-bold transition-colors py-2.5 hover:bg-emerald-700', @click='saveTrackingInfo', :disabled='isSubmittingTracking')
               span(v-if='!isSubmittingTracking') Mark Shipped & Notify Customer 🚀
               span(v-else) Updating...
 
@@ -179,17 +124,9 @@ AdminLayout
         div(class='bg-white rounded-2xl border border-slate-200 shadow-2xs p-6')
           h2(class='text-base font-extrabold text-slate-900 mb-4') Ordered Products ({{ order.items?.length || 0 }})
           div(class='divide-y divide-slate-100')
-            div(
-              v-for='item in order.items',
-              :key='item.id',
-              class='py-4 flex items-center justify-between gap-4'
-            )
+            div(v-for='item in order.items', :key='item.id', class='py-4 flex items-center justify-between gap-4')
               div(class='flex items-center gap-4')
-                img(
-                  class='w-14 h-14 rounded-xl object-cover bg-slate-50 border border-slate-100',
-                  :src='item.image_url || "/placeholder.png"',
-                  :alt='item.product_title'
-                )
+                img(class='w-14 h-14 rounded-xl object-cover bg-slate-50 border border-slate-100', :src='item.image_url || "/placeholder.png"', :alt='item.product_title')
                 div
                   h3(class='text-xs font-extrabold text-slate-900') {{ item.product_title }}
                   p(v-if='item.variant_title', class='text-2xs text-slate-500') Variant: {{ item.variant_title }}
@@ -199,27 +136,14 @@ AdminLayout
               div(class='text-right')
                 span(class='text-xs font-black text-slate-900') {{ formatPrice(item.total_price_paisa) }}
                 div(v-if='item.supplier_url')
-                  a(
-                    class='text-2xs text-blue-600 font-semibold hover:underline',
-                    :href='item.supplier_url',
-                    target='_blank'
-                  ) Supplier Link ↗
+                  a(class='text-2xs text-blue-600 font-semibold hover:underline', :href='item.supplier_url', target='_blank') Supplier Link ↗
 
         div(class='bg-white rounded-2xl border border-slate-200 shadow-2xs p-6')
           h2(class='text-base font-extrabold text-slate-900 mb-3') Internal Admin Notes
           p(class='text-xs text-slate-500 mb-4') Notes recorded here are private to the store team.
-          textarea(
-            class='w-full rounded-xl border border-slate-200 text-xs bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900',
-            rows='3',
-            v-model='adminNote',
-            placeholder='Add notes about customer communication, special instructions, or supplier updates...'
-          )
+          textarea(class='w-full rounded-xl border border-slate-200 text-xs bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900', rows='3', v-model='adminNote', placeholder='Add notes about customer communication, special instructions, or supplier updates...')
           div(class='mt-3 flex justify-end')
-            button(
-              class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800',
-              @click='saveAdminNote',
-              :disabled='isSavingNote'
-            )
+            button(class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800', @click='saveAdminNote', :disabled='isSavingNote')
               span(v-if='!isSavingNote') Save Note
               span(v-else) Saving...
 
@@ -229,11 +153,7 @@ AdminLayout
           
           div
             label(class='block text-xs font-bold text-slate-700 mb-1') Order Status
-            select(
-              class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white font-semibold',
-              v-model='orderStatus',
-              @change='updateStatus("order_status", orderStatus)'
-            )
+            select(class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white font-semibold', v-model='orderStatus', @change='updateStatus("order_status", orderStatus)')
               option(value='pending') Pending
               option(value='confirmed') Confirmed
               option(value='processing') Processing
@@ -244,11 +164,7 @@ AdminLayout
 
           div
             label(class='block text-xs font-bold text-slate-700 mb-1') Payment Status
-            select(
-              class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white font-semibold',
-              v-model='paymentStatus',
-              @change='updateStatus("payment_status", paymentStatus)'
-            )
+            select(class='w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white font-semibold', v-model='paymentStatus', @change='updateStatus("payment_status", paymentStatus)')
               option(value='pending') Pending (e.g. COD)
               option(value='paid') Paid
               option(value='failed') Failed

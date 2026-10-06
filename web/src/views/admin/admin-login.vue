@@ -7,10 +7,7 @@ div(class='min-h-screen bg-slate-900 flex items-center justify-center p-4')
       h1(class='text-2xl font-black text-white tracking-tight') Admin Portal
       p(class='text-xs text-slate-400 mt-1') Store operations, catalog, and manual fulfillment
 
-    div(
-      v-if='errorMessage',
-      class='rounded-xl bg-rose-500 bg-opacity-10 border border-rose-500 border-opacity-20 text-rose-400 text-xs mb-6 p-3.5'
-    )
+    div(v-if='errorMessage', class='rounded-xl bg-rose-500 bg-opacity-10 border border-rose-500 border-opacity-20 text-rose-400 text-xs mb-6 p-3.5')
       | {{ errorMessage }}
 
     // Quick Demo Credentials Card
@@ -18,39 +15,18 @@ div(class='min-h-screen bg-slate-900 flex items-center justify-center p-4')
       div
         p(class='text-xs font-bold text-amber-400') Demo Admin Credentials
         p(class='text-[11px] text-slate-400 font-mono mt-0.5') admin@{{ ($brandName || 'doorside').toLowerCase() }}.test &bull; AdminPass@123!
-      button(
-        type='button',
-        class='px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold text-[11px] hover:bg-amber-300 transition-colors shrink-0 shadow-sm',
-        @click='fillDemo'
-      ) Auto Fill
+      button(type='button', class='px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold text-[11px] hover:bg-amber-300 transition-colors shrink-0 shadow-sm', @click='fillDemo') Auto Fill
 
     form(class='space-y-4', @submit.prevent='handleLogin')
       div
         label(class='block text-xs font-bold text-slate-300 mb-1.5') Admin Email Address
-        input(
-          class='w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400',
-          type='email',
-          v-model='email',
-          :placeholder='`admin@${($brandName || "doorside").toLowerCase()}.test or admin@example.com`',
-          required,
-          autofocus
-        )
+        input(class='w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400', type='email', v-model='email', :placeholder='`admin@${($brandName || "doorside").toLowerCase()}.test or admin@example.com`', required, autofocus)
 
       div
         label(class='block text-xs font-bold text-slate-300 mb-1.5') Password
-        input(
-          class='w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400',
-          type='password',
-          v-model='password',
-          placeholder='••••••••••••',
-          required
-        )
+        input(class='w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400', type='password', v-model='password', placeholder='••••••••••••', required)
 
-      button(
-        class='w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-colors mt-2 shadow-md hover:bg-amber-300',
-        type='submit',
-        :disabled='isLoading'
-      )
+      button(class='w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-colors mt-2 shadow-md hover:bg-amber-300', type='submit', :disabled='isLoading')
         span(v-if='!isLoading') Sign In to Dashboard →
         span(v-else) Authenticating...
 

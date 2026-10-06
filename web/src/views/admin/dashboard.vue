@@ -7,14 +7,8 @@ AdminLayout
         p(class='text-xs text-slate-500 mt-1') Real-time store performance, revenue, and pending fulfillment queue.
       
       div(class='flex items-center gap-3')
-        router-link(
-          class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold transition-colors hover:bg-slate-800',
-          to='/admin/products/new'
-        ) + Add Product
-        router-link(
-          class='px-4 py-2 rounded-xl bg-amber-400 text-slate-950 text-xs font-black transition-colors hover:bg-amber-300',
-          to='/admin/orders?fulfillmentStatus=unfulfilled'
-        ) ⚡ Process Fulfillment ({{ stats.pendingFulfillment || 0 }})
+        router-link(class='px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold transition-colors hover:bg-slate-800', to='/admin/products/new') + Add Product
+        router-link(class='px-4 py-2 rounded-xl bg-amber-400 text-slate-950 text-xs font-black transition-colors hover:bg-amber-300', to='/admin/orders?fulfillmentStatus=unfulfilled') ⚡ Process Fulfillment ({{ stats.pendingFulfillment || 0 }})
 
     div(class='grid grid-cols-2 gap-4 lg:grid-cols-4 sm:gap-6')
       div(class='bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs')
@@ -36,10 +30,7 @@ AdminLayout
           span(class='text-xs font-black text-amber-900') Pending Fulfillment
           span(class='p-2 rounded-xl bg-amber-200 text-amber-900 text-sm') 📦
         div(class='text-2xl font-black text-amber-950') {{ stats.pendingFulfillment || 0 }}
-        router-link(
-          class='text-2xs font-bold text-amber-800 mt-1 inline-block hover:underline',
-          to='/admin/orders?fulfillmentStatus=unfulfilled'
-        ) Needs supplier placement →
+        router-link(class='text-2xs font-bold text-amber-800 mt-1 inline-block hover:underline', to='/admin/orders?fulfillmentStatus=unfulfilled') Needs supplier placement →
 
       div(class='bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs')
         div(class='flex items-center justify-between mb-3')
@@ -54,26 +45,16 @@ AdminLayout
           div(class='flex items-center gap-2')
             span(class='text-base') ⚠️
             h2(class='text-sm font-extrabold text-slate-900') Low Stock Products
-          span(
-            v-if='lowStockProducts.length > 0',
-            class='text-2xs font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700'
-          ) {{ lowStockProducts.length }} items
+          span(v-if='lowStockProducts.length > 0', class='text-2xs font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700') {{ lowStockProducts.length }} items
         
         div(v-if='lowStockProducts.length > 0', class='space-y-3')
-          div(
-            v-for='prod in lowStockProducts',
-            :key='prod.id',
-            class='flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100'
-          )
+          div(v-for='prod in lowStockProducts', :key='prod.id', class='flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100')
             div
               h3(class='text-xs font-bold text-slate-800') {{ prod.title }}
               p(class='text-2xs text-slate-400') SKU: {{ prod.sku || 'N/A' }}
             div(class='flex items-center gap-3')
               span(class='text-xs font-black text-rose-600') {{ prod.stock_quantity }} left
-              router-link(
-                class='text-2xs font-bold text-slate-600 underline hover:text-slate-900',
-                :to='`/admin/products/${prod.id}/edit`'
-              ) Restock
+              router-link(class='text-2xs font-bold text-slate-600 underline hover:text-slate-900', :to='`/admin/products/${prod.id}/edit`') Restock
         div(v-else, class='text-center py-6 text-xs text-slate-400')
           | All products are well stocked 👍
 
@@ -85,11 +66,7 @@ AdminLayout
           router-link(class='text-2xs font-bold text-blue-600 hover:underline', to='/admin/products') View all
         
         div(v-if='topSellingProducts.length > 0', class='space-y-3')
-          div(
-            v-for='prod in topSellingProducts',
-            :key='prod.id',
-            class='flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100'
-          )
+          div(v-for='prod in topSellingProducts', :key='prod.id', class='flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100')
             div
               h3(class='text-xs font-bold text-slate-800') {{ prod.title }}
               p(class='text-2xs text-slate-400') {{ formatPrice(prod.retail_price_paisa) }}
@@ -119,11 +96,7 @@ AdminLayout
               th(class='py-3 px-6') Fulfillment
               th(class='py-3 px-6') Actions
           tbody(class='divide-y divide-slate-100 text-xs')
-            tr(
-              v-for='order in recentOrders',
-              :key='order.id',
-              class='transition-colors hover:bg-slate-50'
-            )
+            tr(v-for='order in recentOrders', :key='order.id', class='transition-colors hover:bg-slate-50')
               td(class='py-4 px-6 font-bold text-slate-900')
                 router-link(class='hover:text-blue-600', :to='`/admin/orders/${order.id}`')
                   | {{ order.order_number }}
@@ -133,20 +106,11 @@ AdminLayout
               td(class='py-4 px-6 text-slate-500') {{ formatDate(order.created_at) }}
               td(class='py-4 px-6 font-bold text-slate-900') {{ formatPrice(order.total_amount_paisa) }}
               td(class='py-4 px-6')
-                span(
-                  class='text-2xs px-2 py-0.5 rounded-full font-bold',
-                  :class='getPaymentBadge(order.payment_status)'
-                ) {{ order.payment_status }}
+                span(class='text-2xs px-2 py-0.5 rounded-full font-bold', :class='getPaymentBadge(order.payment_status)') {{ order.payment_status }}
               td(class='py-4 px-6')
-                span(
-                  class='text-2xs px-2 py-0.5 rounded-full font-bold',
-                  :class='getFulfillmentBadge(order.fulfillment_status)'
-                ) {{ order.fulfillment_status }}
+                span(class='text-2xs px-2 py-0.5 rounded-full font-bold', :class='getFulfillmentBadge(order.fulfillment_status)') {{ order.fulfillment_status }}
               td(class='py-4 px-6')
-                router-link(
-                  class='px-3 py-1 rounded-lg bg-slate-900 text-white text-2xs font-bold hover:bg-slate-800',
-                  :to='`/admin/orders/${order.id}`'
-                ) Fulfill →
+                router-link(class='px-3 py-1 rounded-lg bg-slate-900 text-white text-2xs font-bold hover:bg-slate-800', :to='`/admin/orders/${order.id}`') Fulfill →
             
             tr(v-if='recentOrders.length === 0')
               td(class='py-8 text-center text-slate-400', colspan='7')

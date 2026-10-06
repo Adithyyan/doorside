@@ -1,68 +1,38 @@
 <template lang="pug">
 StoreLayout
-  div(class='bg-slate-50 min-h-[85vh] flex items-center justify-center py-14 px-4')
-    div(class='max-w-md w-full bg-white p-8 sm:p-10 rounded-2xl border border-slate-200 space-y-6 shadow-xs')
+  div(class='bg-page min-h-[85vh] flex items-center justify-center py-14 px-4')
+    div(class='panel-editorial max-w-md w-full p-8 sm:p-10 space-y-6')
       div(class='text-center space-y-2')
-        div(class='w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center text-xl mx-auto') ✨
-        h1(class='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900') Create Your Account
-        p(class='text-xs text-slate-500 max-w-xs mx-auto')
+        div(class='w-12 h-12 bg-surface border border-soft flex items-center justify-center text-xl mx-auto') ✨
+        h1(class='heading-md text-ink') Create Your Account
+        p(class='text-cap text-muted max-w-xs mx-auto')
           | Enjoy expedited checkout, package tracking notifications, and saved preferences.
 
       form(class='space-y-4 pt-2', @submit.prevent='handleRegister')
         div(class='space-y-1')
-          label(class='block text-xs font-semibold text-slate-700') Full Name *
-          input(
-            class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-            type='text',
-            placeholder='Your full name',
-            v-model='form.name',
-            required
-          )
+          label(class='label-ink block') Full Name *
+          input(class='input-base', type='text', placeholder='Your full name', v-model='form.name', required)
 
         div(class='space-y-1')
-          label(class='block text-xs font-semibold text-slate-700') Mobile Phone *
-          input(
-            class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-            type='tel',
-            placeholder='10-digit mobile number',
-            maxlength='10',
-            v-model='form.phone',
-            required
-          )
+          label(class='label-ink block') Mobile Phone *
+          input(class='input-base', type='tel', placeholder='10-digit mobile number', maxlength='10', v-model='form.phone', required)
 
         div(class='space-y-1')
-          label(class='block text-xs font-semibold text-slate-700') Email Address *
-          input(
-            class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-            type='email',
-            placeholder='name@example.com',
-            v-model='form.email',
-            required
-          )
+          label(class='label-ink block') Email Address *
+          input(class='input-base', type='email', placeholder='name@example.com', v-model='form.email', required)
 
         div(class='space-y-1')
-          label(class='block text-xs font-semibold text-slate-700') Password * (8+ characters)
-          input(
-            class='w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-teal-600 focus:outline-none transition-all',
-            type='password',
-            placeholder='Create a secure password',
-            minlength='8',
-            v-model='form.password',
-            required
-          )
+          label(class='label-ink block') Password * (8+ characters)
+          input(class='input-base', type='password', placeholder='Create a secure password', minlength='8', v-model='form.password', required)
 
-        button(
-          class='w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl transition-all shadow-md active:scale-98 disabled:opacity-50 mt-2',
-          type='submit',
-          :disabled='isLoading'
-        )
+        button(class='btn-primary w-full py-4 text-center justify-center disabled:opacity-50 mt-2', type='submit', :disabled='isLoading')
           span(v-if='isLoading') Creating Account...
           span(v-else) Create Account →
 
-      div(class='text-center pt-4 border-t border-slate-100')
-        p(class='text-xs text-slate-500')
+      div(class='text-center pt-4 border-t border-soft')
+        p(class='text-cap text-muted')
           | Already have an account? 
-          router-link(class='font-semibold text-teal-700 hover:underline', to='/login') Sign In
+          router-link(class='label-ink ml-1 underline hover:opacity-70', to='/login') Sign In
 </template>
 
 <script setup>

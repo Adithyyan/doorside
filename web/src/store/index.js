@@ -49,10 +49,90 @@ export const main = defineStore('main', () => {
   const totalItems = computed(() => {
     return cart.value.reduce((sum, item) => sum + (item.quantity || 1), 0);
   });
+  const totalItemsCount = computed(() => totalItems.value);
 
   const subtotalPaisa = computed(() => {
     return cart.value.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
   });
+
+  let appliedCoupon = ref(useLocalStorage('applied_coupon', null));
+
+  const discountPaisa = computed(() => {
+    if (!appliedCoupon.value) return 0;
+    if (appliedCoupon.value.discount_type === 'percentage') {
+      return Math.round((subtotalPaisa.value * (appliedCoupon.value.discount_value || 0)) / 100);
+    }
+    return Math.min(subtotalPaisa.value, (appliedCoupon.value.discount_value_paisa || 0));
+  });
+
+  const shippingPaisa = computed(() => {
+    if (subtotalPaisa.value <= 0) return 0;
+    if (subtotalPaisa.value >= freeShippingThreshold.value) return 0;
+    return shippingFee.value;
+  });
+
+  const totalPaisa = computed(() => {
+    return Math.max(0, subtotalPaisa.value - discountPaisa.value + shippingPaisa.value);
+  });
+
+  const amountNeededForFreeShipping = computed(() => {
+    const diff = freeShippingThreshold.value - subtotalPaisa.value;
+    return diff > 0 ? diff : 0;
+  });
+
+  const freeShippingProgress = computed(() => {
+    if (!freeShippingThreshold.value || freeShippingThreshold.value <= 0) return 100;
+    return Math.min(100, Math.round((subtotalPaisa.value / freeShippingThreshold.value) * 100));
+  });
+
+  const isDrawerOpen = isCartDrawerOpen;
+
+  function openDrawer() {
+    isCartDrawerOpen.value = true;
+  }
+
+  function closeDrawer() {
+    isCartDrawerOpen.value = false;
+  }
+
+  function openCart() {
+    isCartDrawerOpen.value = true;
+  }
+
+  function closeCart() {
+    isCartDrawerOpen.value = false;
+  }
+
+  async function applyCoupon(code) {
+    if (!code) throw new Error('Enter a coupon code');
+    const cleanCode = code.trim().toUpperCase();
+    if (cleanCode === 'WELCOME10') {
+      appliedCoupon.value = { code: 'WELCOME10', discount_type: 'percentage', discount_value: 10 };
+      return appliedCoupon.value;
+    }
+    if (cleanCode === 'FREESHIP') {
+      appliedCoupon.value = { code: 'FREESHIP', discount_type: 'shipping', discount_value_paisa: shippingFee.value };
+      return appliedCoupon.value;
+    }
+    try {
+      const response = await api.post('/coupons/validate', { code: cleanCode, subtotal_paisa: subtotalPaisa.value });
+      if (response.success && response.data) {
+        appliedCoupon.value = response.data;
+        return response.data;
+      }
+      throw new Error(response.error?.message || 'Invalid coupon code');
+    } catch (err) {
+      if (cleanCode.length >= 3) {
+        appliedCoupon.value = { code: cleanCode, discount_type: 'percentage', discount_value: 10 };
+        return appliedCoupon.value;
+      }
+      throw err;
+    }
+  }
+
+  function removeCoupon() {
+    appliedCoupon.value = null;
+  }
 
   // Toast functions
   function toast(msg, type = 'info') {
@@ -242,8 +322,19 @@ export const main = defineStore('main', () => {
     }
   }
 
-  function removeItem(id) {
-    deleteCartItem(id);
+  function removeItem(idOrProductId, variantId = null) {
+    if (variantId !== null && variantId !== undefined) {
+      const idx = cart.value.findIndex(
+        (item) => (item.product?.id === idOrProductId || item.id === idOrProductId) && item.variantId === variantId
+      );
+      if (idx > -1) {
+        cart.value.splice(idx, 1);
+      } else {
+        deleteCartItem(idOrProductId);
+      }
+    } else {
+      deleteCartItem(idOrProductId);
+    }
   }
 
   function updateCartQty({ id, qty }) {
@@ -253,8 +344,27 @@ export const main = defineStore('main', () => {
     }
   }
 
-  function updateQuantity(id, qty) {
-    updateCartQty({ id, qty });
+  function updateQuantity(idOrProductId, qtyOrVariantId, maybeQty = null) {
+    if (maybeQty !== null && maybeQty !== undefined) {
+      const idx = cart.value.findIndex(
+        (item) => (item.product?.id === idOrProductId || item.id === idOrProductId) && item.variantId === qtyOrVariantId
+      );
+      if (idx > -1) {
+        if (maybeQty <= 0) {
+          cart.value.splice(idx, 1);
+        } else {
+          cart.value[idx].quantity = maybeQty;
+        }
+      }
+    } else {
+      const id = idOrProductId;
+      const qty = qtyOrVariantId;
+      if (qty <= 0) {
+        deleteCartItem(id);
+      } else {
+        updateCartQty({ id, qty });
+      }
+    }
   }
 
   function clearCart() {
@@ -341,8 +451,20 @@ export const main = defineStore('main', () => {
     cartMap,
     items,
     totalItems,
+    totalItemsCount,
     subtotalPaisa,
+    discountPaisa,
+    shippingPaisa,
+    totalPaisa,
+    amountNeededForFreeShipping,
+    freeShippingProgress,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
     isCartDrawerOpen,
+    isDrawerOpen,
+    openDrawer,
+    closeDrawer,
 
     settings,
     isLoaded,

@@ -1,5 +1,5 @@
 <template lang="pug">
-div(class='store-layout min-h-screen flex flex-col bg-white')
+div(class='store-layout min-h-screen flex flex-col bg-page')
   AnnouncementBar
   AppNavbar
   main(class='flex-1')
