@@ -1,5 +1,5 @@
 <template lang="pug">
-div(class='group relative bg-white flex flex-col cursor-pointer')
+div(class='group relative bg-white border border-soft hover:border-ink transition-colors flex flex-col cursor-pointer')
   router-link(class='relative block overflow-hidden bg-surface aspect-portrait', :to='`/product/${product.slug}`')
     img(class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105', :src='product.primary_image_url || getFallbackImage()', :alt='product.name', loading='lazy')
 
@@ -9,23 +9,25 @@ div(class='group relative bg-white flex flex-col cursor-pointer')
 
     div(class='absolute bottom-0 left-0 right-0 bg-ink text-white text-fine font-bold uppercase tracking-editorial py-3 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10 cursor-pointer', @click.prevent='quickAdd') + Add to Bag
 
-  div(class='pt-3 pb-4 flex-1 flex flex-col')
+  div(class='p-3.5 sm:p-4 flex-1 flex flex-col')
     p(class='label-muted mb-1') {{ product.category_name || 'Gadgets' }}
 
-    router-link(class='text-xs font-semibold text-ink leading-snug hover:opacity-60 transition-opacity line-clamp-2 mb-2', :to='`/product/${product.slug}`') {{ product.name }}
+    router-link(class='text-xs font-semibold text-ink leading-snug hover:opacity-60 transition-opacity line-clamp-2 min-h-[2.25rem] mb-2', :to='`/product/${product.slug}`') {{ product.name }}
 
-    div(class='mt-auto flex items-center justify-between')
-      div(class='flex items-baseline gap-2')
+    div(class='mt-auto pt-2 flex items-center justify-between gap-2')
+      div(class='flex items-baseline gap-1.5 flex-wrap')
         span(class='text-sm font-bold text-ink') {{ formatPrice(product.selling_price_paisa) }}
         span(v-if='product.compare_at_price_paisa && product.compare_at_price_paisa > product.selling_price_paisa', class='text-xs text-subtle line-through') {{ formatPrice(product.compare_at_price_paisa) }}
 
-      button(class='w-7 h-7 border border-soft text-ink flex items-center justify-center hover:bg-ink hover:text-white hover:border-ink transition-all text-sm font-bold', @click.prevent='quickAdd', aria-label='Add to cart') +
+      button(class='w-7 h-7 border border-soft text-ink flex items-center justify-center hover:bg-ink hover:text-white hover:border-ink active:scale-95 transition-all shrink-0', @click.prevent='quickAdd', aria-label='Add to bag', title='Add to bag')
+        IconPlus(class='w-3 h-3')
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { mainStore } from '@/store';
 import { formatPrice } from '@/helpers';
+import IconPlus from '@/components/icons/plus.vue';
 
 const props = defineProps({
   product: { type: Object, required: true },

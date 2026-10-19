@@ -248,6 +248,10 @@ const api = {
         success: true,
         msg: MESSAGES.ORDER_PLACED_SUCCESS,
         data: {
+          order: {
+            ...order,
+            total_amount_paisa: order.total_paisa,
+          },
           orderId: order.id,
           orderNumber: order.order_number,
           gatewayOrderId,
