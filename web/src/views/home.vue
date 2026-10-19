@@ -17,12 +17,16 @@ StoreLayout
         ProductCard(v-for='product in featuredProducts.slice(0, 8)', :key='product.id', :product='product')
 
       div(v-else-if='isLoading', class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4')
-        div(v-for='n in 8', :key='n', class='bg-white')
+        div(v-for='n in 8', :key='n', class='bg-white border border-soft flex flex-col')
           div(class='bg-page-alt animate-pulse aspect-portrait')
-          div(class='pt-3 space-y-2')
-            div(class='h-2 bg-page-alt animate-pulse w-1/4')
-            div(class='h-3 bg-page-alt animate-pulse')
-            div(class='h-4 bg-page-alt animate-pulse w-1/3 mt-3')
+          div(class='p-3.5 sm:p-4 space-y-2.5 flex-1 flex flex-col justify-between')
+            div(class='space-y-2')
+              div(class='h-2 bg-page-alt animate-pulse w-1/4')
+              div(class='h-3 bg-page-alt animate-pulse')
+              div(class='h-3 bg-page-alt animate-pulse w-3/4')
+            div(class='flex items-center justify-between pt-2')
+              div(class='h-4 bg-page-alt animate-pulse w-1/3')
+              div(class='w-7 h-7 bg-page-alt animate-pulse')
 
       div(v-else, class='text-center py-16')
         p(class='text-muted text-cap uppercase tracking-editorial') Products are syncing. Check back soon.

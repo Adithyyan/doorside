@@ -190,18 +190,23 @@ async function handlePlaceOrder() {
     const res = await api.post('/checkout', payload);
 
     if (res.success && res.data) {
-      const order = res.data.order;
+      const order = res.data.order || {};
+      const orderId = order.id || res.data.orderId;
+      const orderNumber = order.order_number || res.data.orderNumber;
+      const totalAmountPaisa = order.total_amount_paisa || order.total_paisa || res.data.totalPaisa || mainStore().totalPaisa;
 
       if (form.value.paymentMethod === 'cod') {
         mainStore().clearCart();
         mainStore().success('Order placed successfully!');
-        router.push({ name: 'order-success', query: { orderId: order.id, orderNumber: order.order_number } });
+        router.push({ name: 'order-success', query: { orderId, orderNumber } });
         return;
       }
 
       await loadRazorpayScript();
 
-      if (!window.Razorpay) {
+      const isMockGateway = !window.Razorpay || res.data.gatewayOrderId?.startsWith('mock_') || res.data.keyId?.includes('placeholder');
+
+      if (isMockGateway) {
         mainStore().success('Order created! Confirming payment...');
         await api.post('/payments/verify', {
           gatewayOrderId: res.data.gatewayOrderId,
@@ -209,16 +214,16 @@ async function handlePlaceOrder() {
           signature: 'dev_mock_signature',
         }).catch(() => {});
         mainStore().clearCart();
-        router.push({ name: 'order-success', query: { orderId: order.id, orderNumber: order.order_number } });
+        router.push({ name: 'order-success', query: { orderId, orderNumber } });
         return;
       }
 
       const options = {
         key: res.data.keyId || 'rzp_test_placeholder',
-        amount: order.total_amount_paisa,
+        amount: totalAmountPaisa,
         currency: 'INR',
         name: mainStore().brandName,
-        description: `Order ${order.order_number}`,
+        description: `Order ${orderNumber}`,
         order_id: res.data.gatewayOrderId,
         prefill: {
           name: form.value.customerName,
@@ -234,7 +239,7 @@ async function handlePlaceOrder() {
             });
             mainStore().clearCart();
             mainStore().success('Payment verified! Order confirmed.');
-            router.push({ name: 'order-success', query: { orderId: order.id, orderNumber: order.order_number } });
+            router.push({ name: 'order-success', query: { orderId, orderNumber } });
           } catch (verifyError) {
             mainStore().error(verifyError.message || 'Payment verification failed');
           }
