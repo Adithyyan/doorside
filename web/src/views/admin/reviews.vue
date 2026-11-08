@@ -47,8 +47,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api, formatDate } from '@/helpers';
+import { main } from '@/store';
+import { http, formatDate } from '@/helpers';
 
 
 const reviews = ref([]);
@@ -79,13 +79,11 @@ function getStatusBadge(status) {
 
 async function updateReviewStatus(id, newStatus) {
   try {
-    const res = await api.patch(`/admin/reviews/${id}/status`, { status: newStatus });
-    if (res.success) {
-      mainStore().toast(`Review marked as ${newStatus}`, 'success');
-      await getReviews();
-    }
+    await http.patch(`/admin/reviews/${id}/status`, { status: newStatus });
+    main().toast(`Review marked as ${newStatus}`, 'success');
+    await getReviews();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to update review', 'error');
+    main().toast(err.message || 'Failed to update review', 'error');
   }
 }
 
@@ -96,12 +94,10 @@ async function getReviews() {
     if (activeFilter.value !== 'all') {
       url += `&status=${activeFilter.value}`;
     }
-    const res = await api.get(url);
-    if (res.success && res.data) {
-      reviews.value = res.data.items || [];
-    }
-  } catch {
-    reviews.value = [];
+    const res = await http.get(url);
+    reviews.value = res.data.items;
+  } catch (err) {
+    main().toast('Failed to fetch reviews', 'error');
   } finally {
     isLoading.value = false;
   }

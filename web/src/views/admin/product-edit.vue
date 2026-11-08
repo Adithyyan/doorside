@@ -130,8 +130,8 @@ AdminLayout
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api } from '@/helpers';
+import { main } from '@/store';
+import { http } from '@/helpers';
 
 const route = useRoute();
 const router = useRouter();
@@ -195,13 +195,11 @@ async function handleImageUpload(e) {
   formData.append('isPrimary', productImages.value.length === 0 ? 'true' : 'false');
 
   try {
-    const res = await api.post(`/admin/products/${route.params.id}/images`, formData);
-    if (res.success) {
-      mainStore().toast('Image uploaded successfully', 'success');
-      await getProductDetails();
-    }
+    const res = await http.post(`/admin/products/${route.params.id}/images`, formData);
+    main().toast('Image uploaded successfully', 'success');
+    await getProductDetails();
   } catch (err) {
-    mainStore().toast(err.message || 'Image upload failed', 'error');
+    main().toast(err.message || 'Image upload failed', 'error');
   } finally {
     isUploadingImage.value = false;
   }
@@ -212,17 +210,17 @@ async function removeImage(imageId) {
     return;
   }
   try {
-    await api.delete(`/admin/products/${route.params.id}/images/${imageId}`);
-    mainStore().toast('Image removed', 'info');
+    await http.delete(`/admin/products/${route.params.id}/images/${imageId}`);
+    main().toast('Image removed', 'info');
     await getProductDetails();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to remove image', 'error');
+    main().toast(err.message || 'Failed to remove image', 'error');
   }
 }
 
 async function saveProduct() {
   if (!form.value.name.trim()) {
-    mainStore().toast('Product name is required', 'error');
+    main().toast('Product name is required', 'error');
     return;
   }
 
@@ -241,20 +239,16 @@ async function saveProduct() {
 
   try {
     if (isEditMode.value) {
-      const res = await api.patch(`/admin/products/${route.params.id}`, payload);
-      if (res.success) {
-        mainStore().toast('Product updated successfully', 'success');
-        router.push('/admin/products');
-      }
+      await http.patch(`/admin/products/${route.params.id}`, payload);
+      main().toast('Product updated successfully', 'success');
+      router.push('/admin/products');
     } else {
-      const res = await api.post('/admin/products', payload);
-      if (res.success) {
-        mainStore().toast('Product created successfully', 'success');
-        router.push('/admin/products');
-      }
+      await http.post('/admin/products', payload);
+      main().toast('Product created successfully', 'success');
+      router.push('/admin/products');
     }
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save product', 'error');
+    main().toast(err.message || 'Failed to save product', 'error');
   } finally {
     isSaving.value = false;
   }
@@ -265,51 +259,55 @@ async function getProductDetails() {
     return;
   }
   try {
-    const res = await api.get(`/admin/products/${route.params.id}`);
-    if (res.success && res.data?.product) {
-      const p = res.data.product;
-      form.value = {
-        name: p.name || '',
-        slug: p.slug || '',
-        categoryId: p.category_id || '',
-        shortDescription: p.short_description || '',
-        description: p.description || '',
-        sku: p.sku || '',
-        stockQuantity: p.stock_quantity ?? 100,
-        lowStockThreshold: p.low_stock_threshold ?? 5,
-        isActive: p.is_active ?? true,
-        isFeatured: p.is_featured ?? false,
-        status: p.status || 'active',
-        supplierId: p.supplier_id || '',
-        supplierSku: p.supplier_sku_mapping || '',
-        supplierProductUrl: p.supplier_product_url || '',
-        supplierNotes: p.supplier_notes || '',
-      };
-      sellingPriceRupees.value = (p.selling_price_paisa || 0) / 100;
-      compareAtPriceRupees.value = p.compare_at_price_paisa ? p.compare_at_price_paisa / 100 : null;
-      costPriceRupees.value = p.cost_price_paisa ? p.cost_price_paisa / 100 : (p.supplier_cost_price_paisa ? p.supplier_cost_price_paisa / 100 : null);
-      productImages.value = p.images || [];
-    }
+    const res = await http.get(`/admin/products/${route.params.id}`);
+    const p = res.data.product;
+    form.value = {
+      name: p.name || '',
+      slug: p.slug || '',
+      categoryId: p.category_id || '',
+      shortDescription: p.short_description || '',
+      description: p.description || '',
+      sku: p.sku || '',
+      stockQuantity: p.stock_quantity ?? 100,
+      lowStockThreshold: p.low_stock_threshold ?? 5,
+      isActive: p.is_active ?? true,
+      isFeatured: p.is_featured ?? false,
+      status: p.status || 'active',
+      supplierId: p.supplier_id || '',
+      supplierSku: p.supplier_sku_mapping || '',
+      supplierProductUrl: p.supplier_product_url || '',
+      supplierNotes: p.supplier_notes || '',
+    };
+    sellingPriceRupees.value = (p.selling_price_paisa || 0) / 100;
+    compareAtPriceRupees.value = p.compare_at_price_paisa ? p.compare_at_price_paisa / 100 : null;
+    costPriceRupees.value = p.cost_price_paisa ? p.cost_price_paisa / 100 : (p.supplier_cost_price_paisa ? p.supplier_cost_price_paisa / 100 : null);
+    productImages.value = p.images || [];
   } catch (err) {
-    mainStore().toast('Could not load product', 'error');
+    main().toast('Could not load product', 'error');
+  }
+}
+
+async function getCategories() {
+  try {
+    const res = await http.get('/categories');
+    categories.value = res.data.categories;
+  } catch (err) {
+    main().toast('Failed to fetch categories', 'error');
+  }
+}
+
+async function getSuppliers() {
+  try {
+    const res = await http.get('/admin/suppliers');
+    suppliers.value = res.data.suppliers;
+  } catch (err) {
+    main().toast('Failed to fetch suppliers', 'error');
   }
 }
 
 onMounted(async () => {
-  try {
-    const [catRes, supRes] = await Promise.all([
-      api.get('/categories'),
-      api.get('/admin/suppliers'),
-    ]);
-    if (catRes.success) {
-      categories.value = catRes.data?.categories || [];
-    }
-    if (supRes.success) {
-      suppliers.value = supRes.data?.suppliers || [];
-    }
-  } catch {
-    // Non-blocking
-  }
+  await getCategories();
+  await getSuppliers();
 
   if (isEditMode.value) {
     await getProductDetails();

@@ -92,7 +92,8 @@ AdminLayout
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { api, formatPrice, formatDate } from '@/helpers';
+import { http, formatPrice, formatDate } from '@/helpers';
+import { main } from '@/store';
 
 const route = useRoute();
 
@@ -172,14 +173,12 @@ async function getOrders() {
       url += `&paymentStatus=${paymentStatusFilter.value}`;
     }
 
-    const res = await api.get(url);
-    if (res.success && res.data) {
-      orders.value = res.data.items || [];
-      totalOrders.value = res.data.total || 0;
-      totalPages.value = res.data.totalPages || 1;
-    }
-  } catch {
-    orders.value = [];
+    const res = await http.get(url);
+    orders.value = res.data.items;
+    totalOrders.value = res.data.pagination.total;
+    totalPages.value = res.data.pagination.totalPages;
+  } catch (err) {
+    main().toast('Failed to fetch orders', 'error');
   } finally {
     isLoading.value = false;
   }

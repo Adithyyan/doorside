@@ -120,7 +120,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { api, formatPrice, formatDate } from '@/helpers';
+import { http, formatPrice, formatDate } from '@/helpers';
+import { main } from '@/store';
 
 const stats = ref({});
 const lowStockProducts = ref([]);
@@ -151,26 +152,29 @@ function getFulfillmentBadge(status) {
   return 'bg-amber-100 text-amber-800';
 }
 
-onMounted(async () => {
+async function getDashboardData() {
   try {
-    const [dashRes, ordersRes] = await Promise.all([
-      api.get('/admin/dashboard'),
-      api.get('/admin/orders?pageSize=5'),
-    ]);
-
-    if (dashRes.success && dashRes.data) {
-      stats.value = dashRes.data.stats || {};
-      lowStockProducts.value = dashRes.data.lowStockProducts || [];
-      topSellingProducts.value = dashRes.data.topSellingProducts || [];
-    }
-
-    if (ordersRes.success && ordersRes.data) {
-      recentOrders.value = ordersRes.data.items || [];
-    }
-  } catch {
-    // If empty DB, display empty values
-  } finally {
-    isLoading.value = false;
+    const res = await http.get('/admin/dashboard');
+    stats.value = res.data.stats;
+    lowStockProducts.value = res.data.lowStockProducts;
+    topSellingProducts.value = res.data.topSellingProducts;
+  } catch (err) {
+    main().toast('Failed to fetch dashboard data', 'error');
   }
+}
+
+async function getRecentOrders() {
+  try {
+    const res = await http.get('/admin/orders?pageSize=5');
+    recentOrders.value = res.data.items;
+  } catch (err) {
+    main().toast('Failed to fetch recent orders', 'error');
+  }
+}
+
+onMounted(async () => {
+  await getDashboardData();
+  await getRecentOrders();
+  isLoading.value = false;
 });
 </script>

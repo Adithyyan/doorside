@@ -6,7 +6,7 @@ div(class='admin-layout min-h-screen bg-slate-100 flex')
     div(class='h-16 flex items-center justify-between px-6 border-b border-slate-800')
       router-link(class='flex items-center gap-2 text-white font-black tracking-tight', to='/admin/dashboard')
         span(class='text-amber-400 text-xl') ⚡
-        span(class='text-base font-extrabold') {{ mainStore().brandName || 'Store' }}
+        span(class='text-base font-extrabold') {{ main().brandName || 'Store' }}
         span(class='text-2xs bg-slate-800 text-amber-400 font-bold px-2 py-0.5 rounded border border-slate-700') ADMIN
       button(class='text-slate-400 lg:hidden hover:text-white', @click='sidebarOpen = false')
         IconClose(class='w-5 h-5')
@@ -35,8 +35,8 @@ div(class='admin-layout min-h-screen bg-slate-100 flex')
       div(class='flex items-center gap-4')
         div(class='hidden items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200 sm:flex')
           span(class='w-2 h-2 rounded-full bg-emerald-500')
-          span(class='text-xs font-semibold text-slate-700') {{ mainStore().adminUser?.name || 'Administrator' }}
-          span(class='text-2xs text-slate-400') ({{ mainStore().adminUser?.role || 'Admin' }})
+          span(class='text-xs font-semibold text-slate-700') {{ main().adminUser?.name || 'Administrator' }}
+          span(class='text-2xs text-slate-400') ({{ main().adminUser?.role || 'Admin' }})
 
         button(class='px-3 py-1.5 text-xs font-bold text-rose-600 rounded-xl border border-rose-200 transition-colors hover:bg-rose-50', @click='handleLogout') Logout
 
@@ -47,7 +47,7 @@ div(class='admin-layout min-h-screen bg-slate-100 flex')
 <script setup>
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 import IconClose from '@/components/icons/close.vue';
 import IconMenu from '@/components/icons/menu.vue';
 import IconExternal from '@/components/icons/external.vue';
@@ -78,7 +78,7 @@ function isActive(path) {
 }
 
 async function handleLogout() {
-  await mainStore().adminLogout();
+  await main().adminLogout();
   router.push('/admin/login');
 }
 </script>

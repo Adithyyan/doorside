@@ -83,17 +83,22 @@ StoreLayout
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { formatPrice, formatDate, getOrderStatusBadge, api } from '@/helpers';
+import { main } from '@/store';
+import { formatPrice, formatDate, getOrderStatusBadge, http } from '@/helpers';
 
 const route = useRoute();
 const order = ref(null);
 
-onMounted(async () => {
+async function getOrderDetails() {
   try {
-    const res = await api.get(`/orders/${route.params.id}`);
-    if (res.success && res.data?.order) {
-      order.value = res.data.order;
-    }
-  } catch {}
+    const res = await http.get(`/orders/${route.params.id}`);
+    order.value = res.data.order;
+  } catch (err) {
+    main().toast('Failed to fetch order details', 'error');
+  }
+}
+
+onMounted(async () => {
+  await getOrderDetails();
 });
 </script>

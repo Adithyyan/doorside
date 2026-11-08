@@ -86,8 +86,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api } from '@/helpers';
+import { main } from '@/store';
+import { http } from '@/helpers';
 
 
 const categories = ref([]);
@@ -145,16 +145,16 @@ async function saveCategory() {
   isSaving.value = true;
   try {
     if (editingId.value) {
-      await api.patch(`/admin/categories/${editingId.value}`, form.value);
-      mainStore().toast('Category updated', 'success');
+      await http.patch(`/admin/categories/${editingId.value}`, form.value);
+      main().toast('Category updated', 'success');
     } else {
-      await api.post('/admin/categories', form.value);
-      mainStore().toast('Category created', 'success');
+      await http.post('/admin/categories', form.value);
+      main().toast('Category created', 'success');
     }
     showModal.value = false;
     await getCategories();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save category', 'error');
+    main().toast(err.message || 'Failed to save category', 'error');
   } finally {
     isSaving.value = false;
   }
@@ -165,23 +165,21 @@ async function deleteCategory(id) {
     return;
   }
   try {
-    await api.delete(`/admin/categories/${id}`);
-    mainStore().toast('Category deleted', 'info');
+    await http.delete(`/admin/categories/${id}`);
+    main().toast('Category deleted', 'info');
     await getCategories();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to delete category', 'error');
+    main().toast(err.message || 'Failed to delete category', 'error');
   }
 }
 
 async function getCategories() {
   isLoading.value = true;
   try {
-    const res = await api.get('/admin/categories?pageSize=100');
-    if (res.success && res.data) {
-      categories.value = res.data.items || [];
-    }
-  } catch {
-    categories.value = [];
+    const res = await http.get('/admin/categories?pageSize=100');
+    categories.value = res.data.categories;
+  } catch (err) {
+    main().toast('Failed to fetch categories', 'error');
   } finally {
     isLoading.value = false;
   }

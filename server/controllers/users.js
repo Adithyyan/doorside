@@ -612,6 +612,33 @@ const api = {
     }
   },
 
+  async getCustomerById(req, res) {
+    const qObj = { id: req.params?.id };
+    try {
+      const customer = await db.oneOrNone(
+        req,
+        `select id, name, email, phone, is_active, is_guest, total_orders, total_spent_paisa, created_at
+         from users where id = $/id/`,
+        qObj,
+      );
+      if (!customer) {
+        return res.status(404).json({ success: false, msg: 'Customer not found' });
+      }
+      const addresses = await db.any(
+        req,
+        'select * from user_addresses where user_id = $/id/ order by is_default desc, created_at asc',
+        qObj,
+      );
+      return res.status(200).json({
+        success: true,
+        data: { customer, addresses },
+      });
+    } catch (error) {
+      req.log.error('users.getCustomerById(): Unexpected error', { error, ...qObj });
+      return helpers.psqlError(error, req, res, 'Unable to fetch customer details');
+    }
+  },
+
   async getAdminUsers(req, res) {
     const qObj = {};
     try {

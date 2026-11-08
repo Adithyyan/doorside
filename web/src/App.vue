@@ -6,14 +6,14 @@ div(id='app-root', class='min-h-screen flex flex-col')
 
 <script setup>
 import { onMounted } from 'vue';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 import Toast from '@/components/Toast.vue';
 
 
 onMounted(async () => {
-  await mainStore().getSettings();
-  if (mainStore().items.length > 0) {
-    mainStore().calculateServerTotals();
+  await main().getSettings();
+  if (main().items.length > 0) {
+    main().calculateServerTotals();
   }
 });
 </script>

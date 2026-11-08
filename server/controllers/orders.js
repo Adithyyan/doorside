@@ -267,6 +267,69 @@ const api = {
     }
   },
 
+  async trackOrder(req, res) {
+    const qObj = {
+      orderNumber: req.query?.orderNumber?.trim(),
+      contact: req.query?.contact?.trim(),
+    };
+
+    if (!qObj.orderNumber || !qObj.contact) {
+      return res.status(400).json({ success: false, msg: 'Order number and phone/email are required' });
+    }
+
+    try {
+      const order = await db.oneOrNone(
+        req,
+        `select
+            o.id, o.order_number, o.order_status, o.payment_status, o.fulfillment_status,
+            o.subtotal_paisa, o.discount_paisa, o.shipping_paisa, o.tax_paisa, o.total_paisa,
+            o.payment_method, o.courier_name, o.tracking_number, o.tracking_url,
+            o.shipped_at, o.expected_delivery_at, o.delivered_at, o.created_at,
+            oa.phone as contact_phone, oa.email as contact_email, u.email as user_email, u.phone as user_phone
+         from orders o
+         left join order_addresses oa on oa.order_id = o.id and oa.address_type = 'shipping'
+         left join users u on u.id = o.user_id
+         where o.order_number ilike $/orderNumber/
+           and (
+             oa.phone ilike $/contact/ or
+             oa.email ilike $/contact/ or
+             u.phone ilike $/contact/ or
+             u.email ilike $/contact/
+           )`,
+        qObj,
+      );
+
+      if (!order) {
+        return res.status(404).json({ success: false, msg: 'No order found with the provided details.' });
+      }
+
+      order.total_amount_paisa = order.total_paisa;
+
+      const items = await db.any(
+        req,
+        `select
+            oi.id, oi.product_id as "productId", oi.product_name,
+            oi.product_sku as "productSku", oi.variant_name,
+            oi.quantity, oi.unit_price_paisa,
+            coalesce(pi_m.url, m.url) as primary_image_url
+         from order_items oi
+         left join products p on p.id = oi.product_id
+         left join media m on m.id = p.primary_image_id
+         left join product_images pi on pi.product_id = p.id and pi.is_primary = true
+         left join media pi_m on pi_m.id = pi.media_id
+         where oi.order_id = $/id/`,
+        { id: order.id },
+      );
+
+      order.items = items || [];
+
+      return res.status(200).json({ success: true, data: { order } });
+    } catch (error) {
+      req.log.error('orders.trackOrder(): Unexpected error', { error, ...qObj });
+      return helpers.psqlError(error, req, res, 'Unable to track order.');
+    }
+  },
+
   async getOrderById(req, res) {
     const qObj = {
       id: req.params?.id,

@@ -87,7 +87,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { api, formatPrice, formatDate } from '@/helpers';
+import { http, formatPrice, formatDate } from '@/helpers';
+import { main } from '@/store';
 
 const customers = ref([]);
 const totalCustomers = ref(0);
@@ -112,12 +113,11 @@ function changePage(page) {
 
 async function viewCustomer(id) {
   try {
-    const res = await api.get(`/admin/customers/${id}`);
-    if (res.success && res.data) {
-      selectedCustomer.value = res.data.customer;
-      customerAddresses.value = res.data.addresses || [];
-    }
-  } catch {
+    const res = await http.get(`/admin/customers/${id}`);
+    selectedCustomer.value = res.data.customer;
+    customerAddresses.value = res.data.addresses;
+  } catch (err) {
+    main().toast('Failed to fetch customer details', 'error');
   }
 }
 
@@ -128,14 +128,12 @@ async function getCustomers() {
     if (searchQuery.value.trim()) {
       url += `&search=${encodeURIComponent(searchQuery.value.trim())}`;
     }
-    const res = await api.get(url);
-    if (res.success && res.data) {
-      customers.value = res.data.items || [];
-      totalCustomers.value = res.data.total || 0;
-      totalPages.value = res.data.totalPages || 1;
-    }
-  } catch {
-    customers.value = [];
+    const res = await http.get(url);
+    customers.value = res.data.items;
+    totalCustomers.value = res.data.pagination.total;
+    totalPages.value = res.data.pagination.totalPages;
+  } catch (err) {
+    main().toast('Failed to fetch customers', 'error');
   } finally {
     isLoading.value = false;
   }

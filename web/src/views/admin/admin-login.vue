@@ -38,7 +38,7 @@ div(class='min-h-screen bg-slate-900 flex items-center justify-center p-4')
 <script setup>
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 
 const router = useRouter();
 const route = useRoute();
@@ -60,7 +60,7 @@ async function handleLogin() {
   isLoading.value = true;
 
   try {
-    await mainStore().adminLogin(email.value, password.value);
+    await main().adminLogin(email.value, password.value);
     const redirect = route.query.redirect || '/admin/dashboard';
     router.push(redirect);
   } catch (err) {

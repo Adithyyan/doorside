@@ -12,15 +12,15 @@ StoreLayout
             div(class='p-5 bg-page-alt border border-soft text-center space-y-1.5')
               span(class='text-2xl') 📧
               h3(class='label-ink') Email Support
-              p(class='text-cap text-soft') {{ mainStore().supportEmail }}
+              p(class='text-cap text-soft') {{ main().supportEmail }}
             div(class='p-5 bg-page-alt border border-soft text-center space-y-1.5')
               span(class='text-2xl') 📞
               h3(class='label-ink') Phone Assistance
-              p(class='text-cap text-soft') {{ mainStore().supportPhone || '+91 98765 43210' }}
+              p(class='text-cap text-soft') {{ main().supportPhone || '+91 98765 43210' }}
             div(class='p-5 bg-page-alt border border-soft text-center space-y-1.5')
               span(class='text-2xl') 💬
               h3(class='label-ink') WhatsApp Support
-              p(class='text-cap text-soft') {{ mainStore().whatsappNumber || '+91 98765 43210' }}
+              p(class='text-cap text-soft') {{ main().whatsappNumber || '+91 98765 43210' }}
           
           div(class='space-y-4 pt-2 border-t border-soft')
             h2(class='heading-sm text-ink') Send a Direct Message
@@ -57,7 +57,7 @@ import { ref, computed } from 'vue';
 import dayjs from 'dayjs';
 import StoreLayout from '@/components/StoreLayout.vue';
 import { useRoute } from 'vue-router';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 
 const route = useRoute();
 const slug = computed(() => route.params.slug || route.name || 'privacy-policy');
@@ -78,10 +78,10 @@ function toggleFaq(idx) {
 
 function sendContactMessage() {
   if (!contactForm.value.name || !contactForm.value.email || !contactForm.value.message) {
-    mainStore().error('Please fill in your name, email, and message.');
+    main().error('Please fill in your name, email, and message.');
     return;
   }
-  mainStore().success('Thank you! Your message has been sent to our customer care team.');
+  main().success('Thank you! Your message has been sent to our customer care team.');
   contactForm.value = { name: '', email: '', subject: '', message: '' };
 }
 
@@ -110,13 +110,13 @@ const pageTitle = computed(() => {
 
 const faqs = [
   { q: 'How long does delivery take across India?', a: 'All verified orders are dispatched within 24 hours. Standard transit time is 3 to 5 business days depending on your delivery PIN code. Tracking details are sent automatically via SMS and WhatsApp.' },
-  { q: 'What is the return and replacement policy?', a: 'We offer a 7-day hassle-free return and replacement policy for any damaged, defective, or incorrect items. Simply contact our support team to arrange a reverse pickup.' },
+  { q: 'What is your replacement policy for orders?', a: 'If you receive an item that is damaged in transit, defective, or incorrect, reach out to our customer care team within 48 hours of delivery with your unboxing photos or video. We will promptly arrange a replacement.' },
   { q: 'Are all products authentic and genuine?', a: 'Yes, 100%. We partner directly with verified manufacturers and inspect each product batch for durability and performance standards before dispatch.' },
   { q: 'What payment methods do you support?', a: 'We support all major payment methods powered by Razorpay: UPI (GPay, PhonePe, Paytm), Credit & Debit cards, NetBanking, and Cash on Delivery (COD) on eligible orders.' },
 ];
 
 const renderedPolicyContent = computed(() => {
-  const brand = mainStore().brandName;
+  const brand = main().brandName;
   return `
     <p>Welcome to <strong>${brand}</strong>. We are dedicated to providing the highest quality products and customer service across India.</p>
     <h3 class="heading-xs text-ink mt-6 mb-2">Our Commitment to Quality</h3>

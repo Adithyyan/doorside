@@ -63,6 +63,7 @@ router.delete('/categories/:id', helpers.checkAdmin, categories.adminDeleteCateg
 
 // Customers & Users
 router.get('/customers', helpers.checkAdmin, users.getCustomers);
+router.get('/customers/:id', helpers.checkAdmin, users.getCustomerById);
 router.get('/users', helpers.checkAdmin, users.getAdminUsers);
 
 // Suppliers
@@ -88,7 +89,10 @@ router.patch('/reviews/:id/reply', helpers.checkAdmin, reviews.adminReplyReview)
 router.get('/settings', helpers.checkAdmin, settings.adminGetSettings);
 router.put('/settings', helpers.checkAdmin, settings.adminUpdateSettings);
 router.patch('/settings', helpers.checkAdmin, settings.adminUpdateSettings);
+router.patch('/settings/:category', helpers.checkAdmin, settings.adminUpdateCategorySettings);
 router.get('/settings/pages', helpers.checkAdmin, settings.adminGetPages);
+router.get('/settings/pages/all', helpers.checkAdmin, settings.adminGetPages);
+router.put('/settings/pages/:slug', helpers.checkAdmin, settings.adminUpdatePageBySlug);
 router.post('/settings/pages', helpers.checkAdmin, settings.adminCreatePage);
 
 // Media

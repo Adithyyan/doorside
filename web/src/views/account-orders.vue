@@ -7,8 +7,8 @@ StoreLayout
           h1(class='heading-lg text-ink') Account Dashboard
           p(class='text-fine text-muted uppercase tracking-editorial mt-1')
             | Welcome back, 
-            strong(class='text-ink') {{ mainStore().customer?.name }}
-            |  ({{ mainStore().customer?.email }})
+            strong(class='text-ink') {{ main().customer?.name }}
+            |  ({{ main().customer?.email }})
         
         div(class='flex items-center gap-2.5')
           router-link(class='btn-outline px-4 py-2', to='/account/profile')
@@ -41,7 +41,7 @@ StoreLayout
               |  • {{ order.items_count || 1 }} items
             
             div(class='flex items-center gap-2')
-              router-link(class='btn-outline px-4 py-2 text-fine', :to='{ name: "track-order", query: { orderNumber: order.order_number, contact: mainStore().customer?.email || mainStore().customer?.phone } }') Track Shipment 📦
+              router-link(class='btn-outline px-4 py-2 text-fine', :to='{ name: "track-order", query: { orderNumber: order.order_number, contact: main().customer?.email || main().customer?.phone } }') Track Shipment 📦
               router-link(class='btn-primary px-4 py-2 text-fine', :to='`/account/orders/${order.id}`') View Details ›
 
       div(v-else-if='isLoading', class='py-20 text-center text-fine text-muted uppercase tracking-editorial')
@@ -60,8 +60,8 @@ StoreLayout
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
-import { formatPrice, formatDate, getOrderStatusBadge, api } from '@/helpers';
+import { main } from '@/store';
+import { formatPrice, formatDate, getOrderStatusBadge, http } from '@/helpers';
 
 const router = useRouter();
 const orders = ref([]);
@@ -70,19 +70,17 @@ const isLoading = ref(true);
 async function getOrders() {
   isLoading.value = true;
   try {
-    const res = await api.get('/orders');
-    if (res.success && res.data) {
-      orders.value = res.data.orders || [];
-    }
-  } catch {
-    orders.value = [];
+    const res = await http.get('/orders');
+    orders.value = res.data.orders;
+  } catch (err) {
+    main().toast('Failed to fetch orders', 'error');
   } finally {
     isLoading.value = false;
   }
 }
 
 async function handleLogout() {
-  await mainStore().logout();
+  await main().logout();
   router.push('/');
 }
 

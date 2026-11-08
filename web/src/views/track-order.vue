@@ -84,8 +84,8 @@ StoreLayout
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
-import { formatPrice, formatDate, getOrderStatusBadge, api } from '@/helpers';
+import { main } from '@/store';
+import { formatPrice, formatDate, getOrderStatusBadge, http } from '@/helpers';
 
 const route = useRoute();
 
@@ -132,20 +132,16 @@ function isStepComplete(stepIdx) {
 
 async function lookupOrder() {
   if (!orderNumberInput.value.trim() || !contactInput.value.trim()) {
-    mainStore().error('Please enter both Order Number and Phone or Email');
+    main().toast('Please enter both Order Number and Phone or Email', 'error');
     return;
   }
 
   isLoading.value = true;
   try {
-    const res = await api.get(`/orders/track?orderNumber=${encodeURIComponent(orderNumberInput.value.trim())}&contact=${encodeURIComponent(contactInput.value.trim())}`);
-    if (res.success && res.data?.order) {
-      order.value = res.data.order;
-    } else {
-      mainStore().error('No matching order found. Please check your order details.');
-    }
+    const res = await http.get(`/orders/track?orderNumber=${encodeURIComponent(orderNumberInput.value.trim())}&contact=${encodeURIComponent(contactInput.value.trim())}`);
+    order.value = res.data.order;
   } catch (error) {
-    mainStore().error(error.message || 'Order lookup failed');
+    main().toast(error.message || 'Order lookup failed', 'error');
   } finally {
     isLoading.value = false;
   }

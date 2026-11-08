@@ -172,8 +172,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api } from '@/helpers';
+import { main } from '@/store';
+import { http } from '@/helpers';
 
 
 const activeTab = ref('branding');
@@ -212,13 +212,11 @@ function selectPolicyPage(slug) {
 async function saveCurrentPolicyPage() {
   isSavingPage.value = true;
   try {
-    const res = await api.put(`/admin/settings/pages/${selectedPolicySlug.value}`, activePolicyPage.value);
-    if (res.success) {
-      mainStore().toast('Page content saved!', 'success');
-      await getPages();
-    }
+    await http.put(`/admin/settings/pages/${selectedPolicySlug.value}`, activePolicyPage.value);
+    main().toast('Page content saved!', 'success');
+    await getPages();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save page', 'error');
+    main().toast(err.message || 'Failed to save page', 'error');
   } finally {
     isSavingPage.value = false;
   }
@@ -233,13 +231,13 @@ async function saveCurrentTabSettings() {
   try {
     if (activeTab.value === 'branding') {
       await Promise.all([
-        api.patch('/admin/settings/general', { brand_name: generalSettings.value.brand_name }),
-        api.patch('/admin/settings/branding', brandingSettings.value),
+        http.patch('/admin/settings/general', { brand_name: generalSettings.value.brand_name }),
+        http.patch('/admin/settings/branding', brandingSettings.value),
       ]);
     } else if (activeTab.value === 'contact') {
       await Promise.all([
-        api.patch('/admin/settings/general', generalSettings.value),
-        api.patch('/admin/settings/storefront', {
+        http.patch('/admin/settings/general', generalSettings.value),
+        http.patch('/admin/settings/storefront', {
           social_instagram: storefrontSettings.value.social_instagram,
           social_facebook: storefrontSettings.value.social_facebook,
           social_youtube: storefrontSettings.value.social_youtube,
@@ -253,15 +251,15 @@ async function saveCurrentTabSettings() {
         free_shipping_threshold_paisa: Math.round(freeShippingRupees.value * 100),
         default_shipping_fee_paisa: Math.round(shippingFeeRupees.value * 100),
       };
-      await api.patch('/admin/settings/checkout', payload);
+      await http.patch('/admin/settings/checkout', payload);
     } else if (activeTab.value === 'homepage') {
-      await api.patch('/admin/settings/storefront', storefrontSettings.value);
+      await http.patch('/admin/settings/storefront', storefrontSettings.value);
     }
 
-    mainStore().toast('Settings saved successfully!', 'success');
-    await mainStore().getSettings();
+    main().toast('Settings saved successfully!', 'success');
+    await main().getSettings();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to update settings', 'error');
+    main().toast(err.message || 'Failed to update settings', 'error');
   } finally {
     isSaving.value = false;
   }
@@ -269,30 +267,28 @@ async function saveCurrentTabSettings() {
 
 async function getAllSettings() {
   try {
-    const res = await api.get('/admin/settings');
-    if (res.success && res.data?.settings) {
-      const s = res.data.settings;
-      generalSettings.value = s.general || {};
-      brandingSettings.value = s.branding || {};
-      storefrontSettings.value = s.storefront || {};
-      checkoutSettings.value = s.checkout || {};
+    const res = await http.get('/admin/settings');
+    const s = res.data.settings;
+    generalSettings.value = s.general;
+    brandingSettings.value = s.branding;
+    storefrontSettings.value = s.storefront;
+    checkoutSettings.value = s.checkout;
 
-      codFeeRupees.value = (checkoutSettings.value.cod_fee_paisa || 0) / 100;
-      freeShippingRupees.value = (checkoutSettings.value.free_shipping_threshold_paisa || 49900) / 100;
-      shippingFeeRupees.value = (checkoutSettings.value.default_shipping_fee_paisa || 4900) / 100;
-    }
-  } catch {
+    codFeeRupees.value = checkoutSettings.value.cod_fee_paisa / 100;
+    freeShippingRupees.value = checkoutSettings.value.free_shipping_threshold_paisa / 100;
+    shippingFeeRupees.value = checkoutSettings.value.default_shipping_fee_paisa / 100;
+  } catch (err) {
+    main().toast('Failed to fetch settings', 'error');
   }
 }
 
 async function getPages() {
   try {
-    const res = await api.get('/admin/settings/pages/all');
-    if (res.success && res.data?.pages) {
-      availablePages.value = res.data.pages;
-      selectPolicyPage(selectedPolicySlug.value);
-    }
-  } catch {
+    const res = await http.get('/admin/settings/pages/all');
+    availablePages.value = res.data.pages;
+    selectPolicyPage(selectedPolicySlug.value);
+  } catch (err) {
+    main().toast('Failed to fetch pages', 'error');
   }
 }
 

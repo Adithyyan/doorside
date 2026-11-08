@@ -28,7 +28,7 @@ StoreLayout
                 input(class='input-base', type='text', v-model='profileForm.name', required)
               div(class='space-y-1')
                 label(class='label-ink block') Email Address
-                input(class='input-base bg-surface text-muted cursor-not-allowed', type='email', :value='mainStore().customer?.email', disabled)
+                input(class='input-base bg-surface text-muted cursor-not-allowed', type='email', :value='main().customer?.email', disabled)
                 span(class='text-fine text-muted uppercase tracking-editorial') Registered email reference.
               div(class='space-y-1')
                 label(class='label-ink block') Mobile Phone
@@ -115,14 +115,14 @@ StoreLayout
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
-import { api } from '@/helpers';
+import { main } from '@/store';
+import { http } from '@/helpers';
 
 const router = useRouter();
 
 const profileForm = ref({
-  name: mainStore().customer?.name || '',
-  phone: mainStore().customer?.phone || '',
+  name: main().customer?.name || '',
+  phone: main().customer?.phone || '',
 });
 const isUpdatingProfile = ref(false);
 
@@ -154,16 +154,14 @@ const indianStates = [
 async function updateProfile() {
   isUpdatingProfile.value = true;
   try {
-    const res = await api.put('/users/profile', {
+    const res = await http.put('/users/profile', {
       name: profileForm.value.name.trim(),
       phone: profileForm.value.phone.trim(),
     });
-    if (res.success && res.data?.user) {
-      mainStore().customer = { ...mainStore().customer, ...res.data.user };
-      mainStore().success('Profile updated successfully!');
-    }
-  } catch (error) {
-    mainStore().error(error.message || 'Failed to update profile');
+    main().customer = res.data.user;
+    main().toast('Profile updated successfully!', 'success');
+  } catch (err) {
+    main().toast('Failed to update profile', 'error');
   } finally {
     isUpdatingProfile.value = false;
   }
@@ -172,12 +170,10 @@ async function updateProfile() {
 async function loadAddresses() {
   isLoadingAddresses.value = true;
   try {
-    const res = await api.get('/users/addresses');
-    if (res.success && res.data) {
-      addresses.value = res.data.addresses || [];
-    }
-  } catch {
-    addresses.value = [];
+    const res = await http.get('/users/addresses');
+    addresses.value = res.data.addresses;
+  } catch (err) {
+    main().toast('Failed to load addresses', 'error');
   } finally {
     isLoadingAddresses.value = false;
   }
@@ -185,17 +181,17 @@ async function loadAddresses() {
 
 async function saveNewAddress() {
   if (addressForm.value.phone.replace(/[^0-9]/g, '').length !== 10) {
-    mainStore().error('Please enter a valid 10-digit mobile number.');
+    main().toast('Please enter a valid 10-digit mobile number.', 'error');
     return;
   }
   if (addressForm.value.pincode.replace(/[^0-9]/g, '').length !== 6) {
-    mainStore().error('Please enter a valid 6-digit PIN code.');
+    main().toast('Please enter a valid 6-digit PIN code.', 'error');
     return;
   }
 
   isSavingAddress.value = true;
   try {
-    const res = await api.post('/users/addresses', {
+    const res = await http.post('/users/addresses', {
       name: addressForm.value.name.trim(),
       phone: addressForm.value.phone.trim(),
       houseStreet: addressForm.value.houseStreet.trim(),
@@ -206,24 +202,22 @@ async function saveNewAddress() {
       state: addressForm.value.state,
       isDefault: addressForm.value.isDefault,
     });
-    if (res.success) {
-      mainStore().success('Address saved successfully!');
-      showAddressForm.value = false;
-      addressForm.value = {
-        name: '',
-        phone: '',
-        houseStreet: '',
-        area: '',
-        landmark: '',
-        pincode: '',
-        city: '',
-        state: '',
-        isDefault: false,
-      };
-      await loadAddresses();
-    }
-  } catch (error) {
-    mainStore().error(error.message || 'Failed to save address');
+    main().toast('Address saved successfully!', 'success');
+    showAddressForm.value = false;
+    addressForm.value = {
+      name: '',
+      phone: '',
+      houseStreet: '',
+      area: '',
+      landmark: '',
+      pincode: '',
+      city: '',
+      state: '',
+      isDefault: false,
+    };
+    await loadAddresses();
+  } catch (err) {
+    main().toast(err.message || 'Failed to save address', 'error');
   } finally {
     isSavingAddress.value = false;
   }
@@ -231,16 +225,16 @@ async function saveNewAddress() {
 
 async function deleteAddress(addressId) {
   try {
-    await api.delete(`/users/addresses/${addressId}`);
-    mainStore().success('Address deleted');
+    await http.delete(`/users/addresses/${addressId}`);
+    main().toast('Address deleted', 'success');
     addresses.value = addresses.value.filter((a) => a.id !== addressId);
-  } catch (error) {
-    mainStore().error(error.message || 'Failed to delete address');
+  } catch (err) {
+    main().toast(err.message || 'Failed to delete address', 'error');
   }
 }
 
 async function handleLogout() {
-  await mainStore().logout();
+  await main().logout();
   router.push('/');
 }
 

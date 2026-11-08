@@ -64,10 +64,62 @@ const api = {
     const qObj = {};
     try {
       const rows = await db.any(req, 'select * from settings order by category, key', qObj);
-      return res.status(200).json({ success: true, data: { settings: rows } });
+      const settings = {};
+      (rows || []).forEach((r) => {
+        if (!settings[r.category]) settings[r.category] = {};
+        settings[r.category][r.key] = r.value;
+      });
+      return res.status(200).json({ success: true, data: { settings, rows } });
     } catch (error) {
       req.log.error('settings.adminGetSettings(): Unexpected error', { error });
       return helpers.psqlError(error, req, res, 'Unable to get settings.');
+    }
+  },
+
+  async adminUpdateCategorySettings(req, res) {
+    const qObj = {
+      category: req.params?.category,
+      payload: req.body || {},
+    };
+    try {
+      await db.tx(async (t) => {
+        for (const [key, value] of Object.entries(qObj.payload)) {
+          await t.none(
+            `insert into settings (category, key, value, updated_at)
+             values ($/category/, $/key/, $/value/, now())
+             on conflict (category, key) do update set value = $/value/, updated_at = now()`,
+            {
+              category: qObj.category,
+              key,
+              value: typeof value === 'object' && value !== null ? JSON.stringify(value) : (value ?? null),
+            },
+          );
+        }
+      });
+      return res.status(200).json({ success: true, msg: 'Settings updated successfully' });
+    } catch (error) {
+      req.log.error('settings.adminUpdateCategorySettings(): Unexpected error', { error, ...qObj });
+      return helpers.psqlError(error, req, res, 'Unable to update settings.');
+    }
+  },
+
+  async adminUpdatePageBySlug(req, res) {
+    const qObj = {
+      slug: req.params?.slug,
+      title: req.body?.title,
+      contentHtml: req.body?.content || req.body?.content_html || req.body?.contentHtml || '',
+    };
+    try {
+      const page = await db.oneOrNone(
+        req,
+        `update pages set title = coalesce($/title/, title), content_html = $/contentHtml/, updated_at = now()
+         where slug = $/slug/ returning *`,
+        qObj,
+      );
+      return res.status(200).json({ success: true, msg: 'Page updated successfully', data: { page } });
+    } catch (error) {
+      req.log.error('settings.adminUpdatePageBySlug(): Unexpected error', { error, ...qObj });
+      return helpers.psqlError(error, req, res, 'Unable to update page.');
     }
   },
 

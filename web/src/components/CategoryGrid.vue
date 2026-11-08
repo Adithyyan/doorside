@@ -25,14 +25,14 @@ const props = defineProps({
 });
 
 const fallbackList = [
-  { id: 'c1', name: 'Audio & Sound',     slug: 'audio',       image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c2', name: 'Smart Wearables',   slug: 'wearables',   image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c3', name: 'Phone Accessories', slug: 'accessories', image_url: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c4', name: 'Fast Chargers',     slug: 'chargers',    image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c5', name: 'Desk & Lifestyle',  slug: 'lifestyle',   image_url: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c6', name: 'Smart Gadgets',     slug: 'gadgets',     image_url: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c7', name: 'Gaming Gear',       slug: 'gaming',      image_url: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80' },
-  { id: 'c8', name: 'Travel Tech',       slug: 'travel',      image_url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c1', name: 'Watches & Timepieces', slug: 'watches',     image_url: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c2', name: 'Smart Wearables',     slug: 'wearables',   image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c3', name: 'Everyday Carry',      slug: 'accessories', image_url: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c4', name: 'Audio & Acoustics',   slug: 'audio',       image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c5', name: 'Desk & Lifestyle',    slug: 'lifestyle',   image_url: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c6', name: 'Sunglasses & Accents', slug: 'eyewear',    image_url: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c7', name: 'Trending Drops',      slug: 'trending',    image_url: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80' },
+  { id: 'c8', name: 'Travel Essentials',   slug: 'travel',      image_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80' },
 ];
 
 const displayCategories = computed(() =>
@@ -45,10 +45,14 @@ function getCategoryHeight(idx) {
 
 function getCatImage(name = '') {
   const lower = name.toLowerCase();
+  if (lower.includes('watch') || lower.includes('time') || lower.includes('chrono'))
+    return 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80';
   if (lower.includes('audio') || lower.includes('ear') || lower.includes('head'))
     return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
-  if (lower.includes('watch') || lower.includes('wear'))
+  if (lower.includes('wearable') || lower.includes('smart'))
     return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80';
-  return 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&w=600&q=80';
+  if (lower.includes('wallet') || lower.includes('carry') || lower.includes('accessory'))
+    return 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80';
+  return 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80';
 }
 </script>

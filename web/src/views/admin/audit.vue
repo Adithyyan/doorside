@@ -59,7 +59,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { api, formatDate } from '@/helpers';
+import { http, formatDate } from '@/helpers';
+import { main } from '@/store';
 
 const logs = ref([]);
 const totalLogs = ref(0);
@@ -76,14 +77,12 @@ function changePage(page) {
 async function getAuditLogs() {
   isLoading.value = true;
   try {
-    const res = await api.get(`/admin/audit?page=${currentPage.value}&pageSize=${pageSize}`);
-    if (res.success && res.data) {
-      logs.value = res.data.items || [];
-      totalLogs.value = res.data.total || 0;
-      totalPages.value = res.data.totalPages || 1;
-    }
-  } catch {
-    logs.value = [];
+    const res = await http.get(`/admin/audit?page=${currentPage.value}&pageSize=${pageSize}`);
+    logs.value = res.data.items;
+    totalLogs.value = res.data.pagination.total;
+    totalPages.value = res.data.pagination.totalPages;
+  } catch (err) {
+    main().toast('Failed to fetch audit logs', 'error');
   } finally {
     isLoading.value = false;
   }
