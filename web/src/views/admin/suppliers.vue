@@ -85,8 +85,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api } from '@/helpers';
+import { main } from '@/store';
+import { http } from '@/helpers';
 
 
 const suppliers = ref([]);
@@ -146,16 +146,16 @@ async function saveSupplier() {
   isSaving.value = true;
   try {
     if (editingId.value) {
-      await api.patch(`/admin/suppliers/${editingId.value}`, form.value);
-      mainStore().toast('Supplier updated', 'success');
+      await http.patch(`/admin/suppliers/${editingId.value}`, form.value);
+      main().toast('Supplier updated', 'success');
     } else {
-      await api.post('/admin/suppliers', form.value);
-      mainStore().toast('Supplier created', 'success');
+      await http.post('/admin/suppliers', form.value);
+      main().toast('Supplier created', 'success');
     }
     showModal.value = false;
     await getSuppliers();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save supplier', 'error');
+    main().toast(err.message || 'Failed to save supplier', 'error');
   } finally {
     isSaving.value = false;
   }
@@ -164,12 +164,10 @@ async function saveSupplier() {
 async function getSuppliers() {
   isLoading.value = true;
   try {
-    const res = await api.get('/admin/suppliers?pageSize=50');
-    if (res.success && res.data) {
-      suppliers.value = res.data.items || [];
-    }
-  } catch {
-    suppliers.value = [];
+    const res = await http.get('/admin/suppliers?pageSize=50');
+    suppliers.value = res.data.suppliers;
+  } catch (err) {
+    main().toast('Failed to fetch suppliers', 'error');
   } finally {
     isLoading.value = false;
   }

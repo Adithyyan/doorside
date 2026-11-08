@@ -40,18 +40,18 @@ StoreLayout
 
         div(class='space-y-3')
           div(class='relative overflow-hidden bg-muted aspect-landscape')
-            img(class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105', src='https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80', alt='New Tech Collection', loading='lazy')
-            div(class='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent')
+            img(class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105', src='https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80', alt='Curated Watches Collection', loading='lazy')
+            div(class='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent')
             div(class='absolute bottom-4 left-4')
-              p(class='text-white text-fine font-bold uppercase tracking-editorial mb-0.5') Tech Essentials
-              router-link(class='text-white/70 text-fine uppercase tracking-editorial hover:text-white transition-colors', to='/shop?category=gadgets') Shop Now
+              p(class='text-white text-fine font-bold uppercase tracking-editorial mb-0.5') Signature Watches
+              router-link(class='text-white/70 text-fine uppercase tracking-editorial hover:text-white transition-colors', to='/shop?category=watches') Explore Watches →
 
           div(class='relative overflow-hidden bg-muted aspect-landscape')
-            img(class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105', src='https://images.unsplash.com/photo-1585386959984-a4155224a1ad?auto=format&fit=crop&w=800&q=80', alt='Audio Collection', loading='lazy')
-            div(class='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent')
+            img(class='absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105', src='https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80', alt='Everyday Carry Collection', loading='lazy')
+            div(class='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent')
             div(class='absolute bottom-4 left-4')
-              p(class='text-white text-fine font-bold uppercase tracking-editorial mb-0.5') Smart Audio
-              router-link(class='text-white/70 text-fine uppercase tracking-editorial hover:text-white transition-colors', to='/shop?category=audio') Shop Now
+              p(class='text-white text-fine font-bold uppercase tracking-editorial mb-0.5') Everyday Carry &amp; Gear
+              router-link(class='text-white/70 text-fine uppercase tracking-editorial hover:text-white transition-colors', to='/shop?category=accessories') Shop Essentials →
 
         div
           div(class='mb-6')
@@ -70,27 +70,27 @@ StoreLayout
   section(class='py-14 bg-page')
     div(class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8')
       div(class='flex items-end justify-between mb-6')
-        h2(class='heading-lg text-ink leading-none') TECH STORIES
+        h2(class='heading-lg text-ink leading-none') CURATOR'S JOURNAL
 
-        router-link(class='inline-flex items-center gap-1.5 label-ink hover:opacity-60 transition-opacity border-b border-ink pb-0.5', to='/shop') See More →
+        router-link(class='inline-flex items-center gap-1.5 label-ink hover:opacity-60 transition-opacity border-b border-ink pb-0.5', to='/shop') Discover All →
 
       div(class='grid grid-cols-1 md:grid-cols-3 gap-3')
         div(class='md:col-span-2 relative overflow-hidden bg-ink aspect-wide')
-          img(class='absolute inset-0 w-full h-full object-cover opacity-60', src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80', alt='Tech Article', loading='lazy')
+          img(class='absolute inset-0 w-full h-full object-cover opacity-60', src='https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80', alt='Watchmaking & Style', loading='lazy')
           div(class='absolute inset-0 flex flex-col justify-end p-6')
-            p(class='text-fine font-bold uppercase tracking-wide-xl text-white/60 mb-2') Editorial · Gadgets
-            h3(class='heading-sm text-white leading-tight mb-1') What's Ahead in Modern Tech
-            p(class='text-white/60 text-cap leading-relaxed') Insider notes on future gadgets and everyday carry essentials.
+            p(class='text-fine font-bold uppercase tracking-wide-xl text-white/60 mb-2') Editorial · Timepieces
+            h3(class='heading-sm text-white leading-tight mb-1') The Modern Watch Guide: Classic Styles for Everyday Wear
+            p(class='text-white/60 text-cap leading-relaxed') Hand-picked dials, chronographs, and strap pairings designed to elevate your personal wardrobe.
 
         div(class='space-y-3')
           div(class='relative overflow-hidden bg-page-alt aspect-landscape')
-            img(class='absolute inset-0 w-full h-full object-cover', src='https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=600&q=80', alt='Article 2', loading='lazy')
+            img(class='absolute inset-0 w-full h-full object-cover', src='https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80', alt='Everyday Carry', loading='lazy')
             div(class='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent')
             div(class='absolute bottom-3 left-3')
-              p(class='text-white text-fine font-bold uppercase tracking-editorial') Wearables Guide
+              p(class='text-white text-fine font-bold uppercase tracking-editorial') Daily Carry Essentials
           div(class='panel-editorial p-4')
             p(class='label-muted mb-1') Buyer's Guide
-            p(class='text-cap font-semibold text-ink leading-snug') Top 10 Wireless Earbuds Under ₹2000
+            p(class='text-cap font-semibold text-ink leading-snug') Trending Accessories &amp; Watches That Offer High-End Aesthetic at Honest Prices
 
   section(class='py-0')
     div(class='bg-ink py-16')
@@ -113,20 +113,24 @@ import StoreLayout from '@/components/StoreLayout.vue';
 import HeroBanner from '@/components/HeroBanner.vue';
 import ProductCard from '@/components/ProductCard.vue';
 import AnnouncementBar from '@/components/AnnouncementBar.vue';
-import { api } from '@/helpers';
+import { http } from '@/helpers';
+import { main } from '@/store';
 
 const featuredProducts = ref([]);
 const isLoading = ref(true);
 
-onMounted(async () => {
+async function getFeaturedProducts() {
   try {
-    const prodRes = await api.get('/products?isFeatured=true&pageSize=8');
-    if (prodRes.success && prodRes.data) {
-      featuredProducts.value = prodRes.data.products || prodRes.data.items || [];
-    }
-  } catch {
+    const res = await http.get('/products?isFeatured=true&pageSize=8');
+    featuredProducts.value = res.data.products;
+  } catch (err) {
+    main().toast('Failed to fetch featured products', 'error');
   } finally {
     isLoading.value = false;
   }
+}
+
+onMounted(async () => {
+  await getFeaturedProducts();
 });
 </script>

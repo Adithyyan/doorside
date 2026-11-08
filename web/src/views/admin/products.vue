@@ -90,8 +90,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api, formatPrice } from '@/helpers';
+import { main } from '@/store';
+import { http, formatPrice } from '@/helpers';
 
 
 const products = ref([]);
@@ -128,13 +128,20 @@ async function deleteProduct(id) {
     return;
   }
   try {
-    const res = await api.delete(`/admin/products/${id}`);
-    if (res.success) {
-      mainStore().toast('Product deleted successfully', 'info');
-      await getProducts();
-    }
+    await http.delete(`/admin/products/${id}`);
+    main().toast('Product deleted successfully', 'info');
+    await getProducts();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to delete product', 'error');
+    main().toast(err.message || 'Failed to delete product', 'error');
+  }
+}
+
+async function getCategories() {
+  try {
+    const res = await http.get('/categories');
+    categories.value = res.data.categories;
+  } catch (err) {
+    main().toast('Failed to fetch categories', 'error');
   }
 }
 
@@ -152,28 +159,19 @@ async function getProducts() {
       url += `&isActive=${statusFilter.value === 'active'}`;
     }
 
-    const [prodRes, catRes] = await Promise.all([
-      api.get(url),
-      api.get('/categories'),
-    ]);
-
-    if (prodRes.success && prodRes.data) {
-      products.value = prodRes.data.items || [];
-      totalProducts.value = prodRes.data.total || 0;
-      totalPages.value = prodRes.data.totalPages || 1;
-    }
-
-    if (catRes.success && catRes.data) {
-      categories.value = catRes.data.categories || [];
-    }
-  } catch {
-    products.value = [];
+    const res = await http.get(url);
+    products.value = res.data.items;
+    totalProducts.value = res.data.pagination.total;
+    totalPages.value = res.data.pagination.totalPages;
+  } catch (err) {
+    main().toast('Failed to fetch products', 'error');
   } finally {
     isLoading.value = false;
   }
 }
 
-onMounted(() => {
-  getProducts();
+onMounted(async () => {
+  await getCategories();
+  await getProducts();
 });
 </script>

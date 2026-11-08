@@ -214,8 +214,8 @@ AdminLayout
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api, formatPrice, formatDate } from '@/helpers';
+import { main } from '@/store';
+import { http, formatPrice, formatDate } from '@/helpers';
 
 const route = useRoute();
 
@@ -283,31 +283,29 @@ async function copyCustomerAddress() {
   try {
     await navigator.clipboard.writeText(text);
     copiedAddress.value = true;
-    mainStore().toast('Customer details copied to clipboard!', 'success');
+    main().toast('Customer details copied to clipboard!', 'success');
     setTimeout(() => {
       copiedAddress.value = false;
     }, 3000);
   } catch {
-    mainStore().toast('Please copy manually', 'info');
+    main().toast('Please copy manually', 'info');
   }
 }
 
 async function recordSupplierOrder() {
   if (!supplierOrderId.value.trim()) {
-    mainStore().toast('Please enter the supplier order ID', 'error');
+    main().toast('Please enter the supplier order ID', 'error');
     return;
   }
   isSubmittingSupplier.value = true;
   try {
-    const res = await api.post(`/admin/orders/${order.value.id}/supplier-order`, {
+    const res = await http.post(`/admin/orders/${order.value.id}/supplier-order`, {
       supplierOrderId: supplierOrderId.value.trim(),
     });
-    if (res.success) {
-      mainStore().toast('Supplier order recorded!', 'success');
-      await getOrder();
-    }
+    main().toast('Supplier order recorded!', 'success');
+    await getOrder();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to record supplier order', 'error');
+    main().toast(err.message || 'Failed to record supplier order', 'error');
   } finally {
     isSubmittingSupplier.value = false;
   }
@@ -315,26 +313,24 @@ async function recordSupplierOrder() {
 
 async function saveTrackingInfo() {
   if (!trackingNumber.value.trim()) {
-    mainStore().toast('Please enter tracking number', 'error');
+    main().toast('Please enter tracking number', 'error');
     return;
   }
   isSubmittingTracking.value = true;
   try {
-    const res = await api.patch(`/admin/orders/${order.value.id}/tracking`, {
+    await http.patch(`/admin/orders/${order.value.id}/tracking`, {
       courierName: courierName.value,
       trackingNumber: trackingNumber.value.trim(),
       trackingUrl: trackingUrl.value.trim() || undefined,
     });
-    if (res.success) {
-      await api.patch(`/admin/orders/${order.value.id}/status`, {
-        statusType: 'fulfillment_status',
-        newStatus: 'shipped',
-      });
-      mainStore().toast('Tracking saved & marked as shipped!', 'success');
-      await getOrder();
-    }
+    await http.patch(`/admin/orders/${order.value.id}/status`, {
+      statusType: 'fulfillment_status',
+      newStatus: 'shipped',
+    });
+    main().toast('Tracking saved & marked as shipped!', 'success');
+    await getOrder();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to update tracking', 'error');
+    main().toast(err.message || 'Failed to update tracking', 'error');
   } finally {
     isSubmittingTracking.value = false;
   }
@@ -342,30 +338,26 @@ async function saveTrackingInfo() {
 
 async function updateStatus(statusType, newStatus) {
   try {
-    const res = await api.patch(`/admin/orders/${order.value.id}/status`, {
+    await http.patch(`/admin/orders/${order.value.id}/status`, {
       statusType,
       newStatus,
     });
-    if (res.success) {
-      mainStore().toast(`Updated ${statusType} to ${newStatus}`, 'success');
-      await getOrder();
-    }
+    main().toast(`Updated ${statusType} to ${newStatus}`, 'success');
+    await getOrder();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to update status', 'error');
+    main().toast(err.message || 'Failed to update status', 'error');
   }
 }
 
 async function saveAdminNote() {
   isSavingNote.value = true;
   try {
-    const res = await api.patch(`/admin/orders/${order.value.id}/note`, {
+    await http.patch(`/admin/orders/${order.value.id}/note`, {
       adminNote: adminNote.value,
     });
-    if (res.success) {
-      mainStore().toast('Note saved', 'success');
-    }
+    main().toast('Note saved', 'success');
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save note', 'error');
+    main().toast(err.message || 'Failed to save note', 'error');
   } finally {
     isSavingNote.value = false;
   }
@@ -374,19 +366,17 @@ async function saveAdminNote() {
 async function getOrder() {
   isLoading.value = true;
   try {
-    const res = await api.get(`/admin/orders/${route.params.id}`);
-    if (res.success && res.data) {
-      order.value = res.data.order;
-      orderStatus.value = res.data.order.order_status;
-      paymentStatus.value = res.data.order.payment_status;
-      adminNote.value = res.data.order.admin_note || '';
-      supplierOrderId.value = res.data.order.supplier_order_id || '';
-      courierName.value = res.data.order.courier_name || '';
-      trackingNumber.value = res.data.order.tracking_number || '';
-      trackingUrl.value = res.data.order.tracking_url || '';
-    }
-  } catch {
-    order.value = null;
+    const res = await http.get(`/admin/orders/${route.params.id}`);
+    order.value = res.data.order;
+    orderStatus.value = order.value.order_status;
+    paymentStatus.value = order.value.payment_status;
+    adminNote.value = order.value.admin_note || '';
+    supplierOrderId.value = order.value.supplier_order_id || '';
+    courierName.value = order.value.courier_name || '';
+    trackingNumber.value = order.value.tracking_number || '';
+    trackingUrl.value = order.value.tracking_url || '';
+  } catch (err) {
+    main().toast('Failed to fetch order details', 'error');
   } finally {
     isLoading.value = false;
   }

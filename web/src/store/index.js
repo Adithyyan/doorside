@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
 import dayjs from 'dayjs';
-import { api } from '@/helpers';
+import { http } from '@/helpers';
 import config from '@/config';
 
 export const main = defineStore('main', () => {
@@ -115,7 +115,7 @@ export const main = defineStore('main', () => {
       return appliedCoupon.value;
     }
     try {
-      const response = await api.post('/coupons/validate', { code: cleanCode, subtotal_paisa: subtotalPaisa.value });
+      const response = await http.post('/coupons/validate', { code: cleanCode, subtotal_paisa: subtotalPaisa.value });
       if (response.success && response.data) {
         appliedCoupon.value = response.data;
         return response.data;
@@ -136,17 +136,16 @@ export const main = defineStore('main', () => {
 
   // Toast functions
   function toast(msg, type = 'info') {
-    toastMsg.value.msg = msg;
-    toastMsg.value.type = type;
-    let delayInSeconds = type === 'success' ? 5000 : 10000;
+    const messageText = typeof msg === 'string' ? msg : (msg?.message || msg?.msg || String(msg || ''));
+    toastMsg.value = { msg: messageText, type };
+    const delayMs = type === 'success' ? 4000 : 7000;
     if (timeOutId.value) {
       clearTimeout(timeOutId.value);
     }
     timeOutId.value = setTimeout(() => {
-      toastMsg.value.msg = '';
-      toastMsg.value.type = '';
-      clearTimeout(timeOutId.value);
-    }, delayInSeconds);
+      toastMsg.value = { msg: '', type: '' };
+      timeOutId.value = undefined;
+    }, delayMs);
   }
 
   function showToast(msg, type = 'info') {
@@ -154,10 +153,10 @@ export const main = defineStore('main', () => {
   }
 
   function removeToastMsg() {
-    toastMsg.value.msg = '';
-    toastMsg.value.type = '';
+    toastMsg.value = { msg: '', type: '' };
     if (timeOutId.value) {
       clearTimeout(timeOutId.value);
+      timeOutId.value = undefined;
     }
   }
 
@@ -211,28 +210,28 @@ export const main = defineStore('main', () => {
   }
 
   async function login(email, password) {
-    const response = await api.post('/auth/login', { email, password });
+    const response = await http.post('/auth/login', { email, password });
     if (response.success && response.data) {
       setUser(response.data.customer);
       setToken(response.data.accessToken);
       return response.data;
     }
-    throw new Error(response.error?.message || 'Login failed');
+    throw new Error(response.error?.message || response.msg || response.message || 'Login failed');
   }
 
   async function register(userData) {
-    const response = await api.post('/auth/register', userData);
+    const response = await http.post('/auth/register', userData);
     if (response.success && response.data) {
       setUser(response.data.customer);
       setToken(response.data.accessToken);
       return response.data;
     }
-    throw new Error(response.error?.message || 'Registration failed');
+    throw new Error(response.error?.message || response.msg || response.message || 'Registration failed');
   }
 
   async function logout() {
     try {
-      await api.post('/auth/logout');
+      await http.post('/auth/logout');
     } catch {
       // Ignore
     } finally {
@@ -243,7 +242,7 @@ export const main = defineStore('main', () => {
 
   async function getProfile() {
     try {
-      const response = await api.get('/auth/me');
+      const response = await http.get('/auth/me');
       if (response.success && response.data) {
         setUser(response.data.customer);
       }
@@ -253,19 +252,18 @@ export const main = defineStore('main', () => {
   }
 
   async function adminLogin(email, password) {
-    const response = await api.post('/admin/auth/login', { email, password });
+    const response = await http.post('/admin/auth/login', { email, password });
     if (response.success && response.data) {
-      const adminData = response.data.adminUser || response.data.admin;
-      setAdminUser(adminData);
+      setAdminUser(response.data.adminUser);
       setAdminToken(response.data.accessToken);
       return response.data;
     }
-    throw new Error(response.error?.message || 'Admin login failed');
+    throw new Error(response.error?.message || response.msg || response.message || 'Admin login failed');
   }
 
   async function adminLogout() {
     try {
-      await api.post('/admin/auth/logout');
+      await http.post('/admin/auth/logout');
     } catch {
       // Ignore
     } finally {
@@ -419,7 +417,7 @@ export const main = defineStore('main', () => {
 
   async function getSettings() {
     try {
-      const response = await api.get('/settings/public');
+      const response = await http.get('/settings/public');
       if (response.success && response.data) {
         setSettings(response.data);
       }

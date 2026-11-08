@@ -8,14 +8,12 @@ div(class='ticker-wrapper')
 
 <script setup>
 const rawItems = [
-  'Free Delivery on Orders Above ₹499',
-  'Fresh Tech Drops',
   'Cash on Delivery Available',
-  'New Season Gadgets',
-  '7-Day Easy Returns',
-  'Limited Stock Alert',
+  'Curated Watches & Trending Finds',
   '100% Secure Checkout',
-  'Verified Suppliers',
+  'Verified Quality Checked',
+  'Pan-India Tracked Dispatch',
+  'Customer Support Assistance',
 ];
 
 const repeatedItems = [...rawItems, ...rawItems].map((text, i) => ({ text, key: i }));

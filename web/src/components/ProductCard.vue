@@ -10,7 +10,7 @@ div(class='group relative bg-white border border-soft hover:border-ink transitio
     div(class='absolute bottom-0 left-0 right-0 bg-ink text-white text-fine font-bold uppercase tracking-editorial py-3 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10 cursor-pointer', @click.prevent='quickAdd') + Add to Bag
 
   div(class='p-3.5 sm:p-4 flex-1 flex flex-col')
-    p(class='label-muted mb-1') {{ product.category_name || 'Gadgets' }}
+    p(class='label-muted mb-1') {{ product.category_name || 'Curated Drop' }}
 
     router-link(class='text-xs font-semibold text-ink leading-snug hover:opacity-60 transition-opacity line-clamp-2 min-h-[2.25rem] mb-2', :to='`/product/${product.slug}`') {{ product.name }}
 
@@ -25,7 +25,7 @@ div(class='group relative bg-white border border-soft hover:border-ink transitio
 
 <script setup>
 import { computed } from 'vue';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 import { formatPrice } from '@/helpers';
 import IconPlus from '@/components/icons/plus.vue';
 
@@ -47,8 +47,8 @@ function getFallbackImage() {
 }
 
 function quickAdd() {
-  mainStore().addItem(props.product, null, 1);
-  mainStore().success(`${props.product.name} added to bag!`);
-  mainStore().openDrawer();
+  main().addItem(props.product, null, 1);
+  main().success(`${props.product.name} added to bag!`);
+  main().openDrawer();
 }
 </script>

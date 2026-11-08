@@ -114,8 +114,8 @@ AdminLayout
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/components/AdminLayout.vue';
-import { mainStore } from '@/store';
-import { api, formatPrice } from '@/helpers';
+import { main } from '@/store';
+import { http, formatPrice } from '@/helpers';
 
 
 const coupons = ref([]);
@@ -185,16 +185,16 @@ async function saveCoupon() {
 
   try {
     if (editingId.value) {
-      await api.patch(`/admin/coupons/${editingId.value}`, payload);
-      mainStore().toast('Coupon updated', 'success');
+      await http.patch(`/admin/coupons/${editingId.value}`, payload);
+      main().toast('Coupon updated', 'success');
     } else {
-      await api.post('/admin/coupons', payload);
-      mainStore().toast('Coupon created', 'success');
+      await http.post('/admin/coupons', payload);
+      main().toast('Coupon created', 'success');
     }
     showModal.value = false;
     await getCoupons();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to save coupon', 'error');
+    main().toast(err.message || 'Failed to save coupon', 'error');
   } finally {
     isSaving.value = false;
   }
@@ -205,23 +205,21 @@ async function deleteCoupon(id) {
     return;
   }
   try {
-    await api.delete(`/admin/coupons/${id}`);
-    mainStore().toast('Coupon deleted', 'info');
+    await http.delete(`/admin/coupons/${id}`);
+    main().toast('Coupon deleted', 'info');
     await getCoupons();
   } catch (err) {
-    mainStore().toast(err.message || 'Failed to delete coupon', 'error');
+    main().toast(err.message || 'Failed to delete coupon', 'error');
   }
 }
 
 async function getCoupons() {
   isLoading.value = true;
   try {
-    const res = await api.get('/admin/coupons?pageSize=50');
-    if (res.success && res.data) {
-      coupons.value = res.data.items || [];
-    }
-  } catch {
-    coupons.value = [];
+    const res = await http.get('/admin/coupons?pageSize=50');
+    coupons.value = res.data.coupons;
+  } catch (err) {
+    main().toast('Failed to fetch coupons', 'error');
   } finally {
     isLoading.value = false;
   }

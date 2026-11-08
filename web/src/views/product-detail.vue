@@ -68,8 +68,8 @@ StoreLayout
               div(class='text-base mb-1') 🛡️
               p 100% Genuine
             div(class='p-2 bg-page-alt border border-soft')
-              div(class='text-base mb-1') 🔄
-              p 7-Day Returns
+              div(class='text-base mb-1') 🔍
+              p Quality Verified
 
       div(class='panel-editorial p-6 sm:p-10 space-y-6')
         div(class='flex gap-8 border-b border-soft')
@@ -131,8 +131,8 @@ StoreLayout
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { api, formatPrice } from '@/helpers';
-import { mainStore } from '@/store';
+import { http, formatPrice } from '@/helpers';
+import { main } from '@/store';
 
 const route = useRoute();
 const router = useRouter();
@@ -199,29 +199,29 @@ function selectVariant(variant) {
 }
 
 function addToCart() {
-  mainStore().addItem(product.value, selectedVariant.value, quantity.value);
-  mainStore().success(`Added ${product.value.name} to your bag!`);
-  mainStore().openDrawer();
+  main().addItem(product.value, selectedVariant.value, quantity.value);
+  main().success(`Added ${product.value.name} to your bag!`);
+  main().openDrawer();
 }
 
 function buyNow() {
-  mainStore().addItem(product.value, selectedVariant.value, quantity.value);
+  main().addItem(product.value, selectedVariant.value, quantity.value);
   router.push('/checkout');
 }
 
 async function submitReview() {
   if (!reviewerName.value || !reviewComment.value) {
-    mainStore().error('Please provide your name and a short review comment.');
+    main().toast('Please provide your name and a short review comment.', 'error');
     return;
   }
   try {
-    await api.post(`/products/${product.value.id}/reviews`, {
+    await http.post(`/products/${product.value.id}/reviews`, {
       rating: reviewRating.value,
       name: reviewerName.value,
       email: reviewerEmail.value,
       comment: reviewComment.value,
     });
-    mainStore().success('Review submitted successfully!');
+    main().toast('Review submitted successfully!', 'success');
     reviews.value.unshift({
       id: Date.now(),
       reviewer_name: reviewerName.value,
@@ -231,30 +231,38 @@ async function submitReview() {
     showReviewForm.value = false;
     reviewComment.value = '';
   } catch (err) {
-    mainStore().error(err.message || 'Unable to submit review.');
+    main().toast(err.message || 'Unable to submit review.', 'error');
+  }
+}
+
+async function getProductDetails(slug) {
+  try {
+    const res = await http.get(`/products/${slug}`);
+    product.value = res.data.product;
+    activeImage.value = product.value.primary_image_url || (galleryImages.value[0] || '');
+    if (product.value.variants && product.value.variants.length > 0) {
+      selectedVariant.value = product.value.variants[0];
+    }
+  } catch (err) {
+    main().toast('Failed to fetch product details', 'error');
+  }
+}
+
+async function getProductReviews(productId) {
+  try {
+    const res = await http.get(`/products/${productId}/reviews`);
+    reviews.value = res.data.items;
+  } catch (err) {
+    main().toast('Failed to fetch reviews', 'error');
   }
 }
 
 onMounted(async () => {
   const slug = route.params.slug;
-  try {
-    const res = await api.get(`/products/${slug}`);
-    if (res.success && res.data?.product) {
-      product.value = res.data.product;
-      activeImage.value = product.value.primary_image_url || (galleryImages.value[0] || '');
-      if (product.value.variants && product.value.variants.length > 0) {
-        selectedVariant.value = product.value.variants[0];
-      }
-    }
-  } catch {}
+  await getProductDetails(slug);
 
   if (product.value?.id) {
-    try {
-      const revRes = await api.get(`/products/${product.value.id}/reviews`);
-      if (revRes.success && revRes.data) {
-        reviews.value = revRes.data.reviews || [];
-      }
-    } catch {}
+    await getProductReviews(product.value.id);
   }
 });
 </script>

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -242,13 +242,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   
   if (to.meta.requiresAdmin) {
-    if (!mainStore().isAdminLoggedIn) {
+    if (!main().isAdminLoggedIn) {
       return next({ name: 'admin-login', query: { redirect: to.fullPath } });
     }
   }
 
   if (to.meta.requiresAuth) {
-    if (!mainStore().isCustomerLoggedIn) {
+    if (!main().isCustomerLoggedIn) {
       return next({ name: 'login', query: { redirect: to.fullPath } });
     }
   }

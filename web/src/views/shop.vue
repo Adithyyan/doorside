@@ -102,7 +102,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
 import ProductCard from '@/components/ProductCard.vue';
-import { api } from '@/helpers';
+import { http } from '@/helpers';
+import { main } from '@/store';
 
 const route = useRoute();
 const router = useRouter();
@@ -212,24 +213,24 @@ function changePage(page) {
 
 async function loadFiltersAndSort() {
   try {
-    const res = await api.get('/products/filters');
-    if (res.success && res.data) {
-      dynamicFilters.value = res.data.filters || [];
-      sortOptions.value = res.data.sortOptions || [];
-      if (sortOptions.value.length > 0 && !currentSortId.value) {
-        currentSortId.value = sortOptions.value[0].id;
-      }
+    const res = await http.get('/products/filters');
+    dynamicFilters.value = res.data.filters;
+    sortOptions.value = res.data.sortOptions;
+    if (sortOptions.value.length > 0 && !currentSortId.value) {
+      currentSortId.value = sortOptions.value[0].id;
     }
-  } catch {}
+  } catch (err) {
+    main().toast('Failed to load filters', 'error');
+  }
 }
 
 async function loadCategories() {
   try {
-    const res = await api.get('/categories');
-    if (res.success && res.data) {
-      categories.value = res.data.categories || [];
-    }
-  } catch {}
+    const res = await http.get('/categories');
+    categories.value = res.data.categories;
+  } catch (err) {
+    main().toast('Failed to load categories', 'error');
+  }
 }
 
 async function fetchProducts() {
@@ -244,14 +245,12 @@ async function fetchProducts() {
     if (selectedFilterValueIds.value.size > 0) {
       params.set('filterValueIds', Array.from(selectedFilterValueIds.value).join(','));
     }
-    const res = await api.get(`/products?${params.toString()}`);
-    if (res.success && res.data) {
-      products.value = res.data.products || res.data.items || [];
-      totalProducts.value = res.data.pagination?.total || products.value.length;
-      totalPages.value = res.data.pagination?.totalPages || 1;
-    }
-  } catch {
-    products.value = [];
+    const res = await http.get(`/products?${params.toString()}`);
+    products.value = res.data.products;
+    totalProducts.value = res.data.pagination.total;
+    totalPages.value = res.data.pagination.totalPages;
+  } catch (err) {
+    main().toast('Failed to fetch products', 'error');
   } finally {
     isLoading.value = false;
   }

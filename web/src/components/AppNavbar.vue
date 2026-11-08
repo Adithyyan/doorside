@@ -5,13 +5,13 @@ header(class='sticky top-0 z-40')
     div(class='max-w-7xl mx-auto px-6 lg:px-8')
       div(class='flex items-center justify-between h-8')
         div(class='flex items-center gap-4')
-          a(href='#', class='label-muted hover:text-ink transition-colors') Instagram
-          a(href='#', class='label-muted hover:text-ink transition-colors') Pinterest
-          a(href='#', class='label-muted hover:text-ink transition-colors') YouTube
+          a(:href='main().settings?.storefront?.social_instagram || "#"', target='_blank', rel='noopener noreferrer', class='label-muted hover:text-ink transition-colors') Instagram
+          a(:href='main().settings?.storefront?.social_facebook || "#"', target='_blank', rel='noopener noreferrer', class='label-muted hover:text-ink transition-colors') Facebook
+          a(:href='main().settings?.storefront?.social_twitter || "#"', target='_blank', rel='noopener noreferrer', class='label-muted hover:text-ink transition-colors') Twitter
 
         div(class='flex items-center gap-5')
-          div(v-if='mainStore().isCustomerLoggedIn')
-            router-link(class='label-muted hover:text-ink transition-colors', to='/account/orders') {{ mainStore().customer.name?.split(' ')[0] || 'Account' }}
+          div(v-if='main().isCustomerLoggedIn')
+            router-link(class='label-muted hover:text-ink transition-colors', to='/account/orders') {{ main().customer.name?.split(' ')[0] || 'Account' }}
           div(v-else, class='flex items-center gap-4')
             router-link(class='label-muted hover:text-ink transition-colors', to='/login') Sign In
             router-link(class='label-muted hover:text-ink transition-colors', to='/register') Join Us
@@ -25,16 +25,15 @@ header(class='sticky top-0 z-40')
           IconMenu(class='w-5 h-5')
 
         router-link(class='shrink-0', to='/')
-          img(v-if='mainStore().settings.branding?.logo_url', class='h-7 w-auto object-contain', :src='mainStore().settings.branding.logo_url', :alt='mainStore().brandName')
-          span(v-else, class='brand-name') {{ mainStore().brandName }}
+          img(v-if='main().settings.branding?.logo_url', class='h-7 w-auto object-contain', :src='main().settings.branding.logo_url', :alt='main().brandName')
+          span(v-else, class='brand-name') {{ main().brandName }}
 
         nav(class='hidden md:flex items-center gap-1 flex-1 px-6')
           router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/') Home
-          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop') All Products
-          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?category=audio') Audio
-          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?category=wearables') Wearables
-          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?category=gadgets') Gadgets
-          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?sale=true') Deals
+          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?category=watches') Watches
+          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop?category=accessories') Everyday Gear
+          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/shop') All Drops
+          router-link(class='px-3 py-1 label-ink hover:opacity-60 transition-opacity', to='/track-order') Track Order
 
         div(class='flex items-center gap-2 shrink-0')
           button(class='p-1.5 text-ink hover:opacity-60 transition-opacity hidden md:flex', aria-label='Search', @click='searchOpen = !searchOpen')
@@ -43,10 +42,10 @@ header(class='sticky top-0 z-40')
           router-link(class='p-1.5 text-ink hover:opacity-60 transition-opacity hidden md:flex', to='/account/orders', aria-label='Account')
             IconUser(class='w-4 h-4')
 
-          button(class='relative flex items-center gap-1.5 px-4 py-2 bg-ink text-white label-ink hover:opacity-80 transition-colors', @click='mainStore().openDrawer()', aria-label='View cart')
+          button(class='relative flex items-center gap-1.5 px-4 py-2 bg-ink text-white label-ink hover:opacity-80 transition-colors', @click='main().openDrawer()', aria-label='View cart')
             IconCart(class='w-3.5 h-3.5')
             span(class='hidden sm:inline text-white text-fine font-bold uppercase tracking-editorial') Bag
-            span(v-if='mainStore().totalItemsCount > 0', class='ml-0.5 text-white text-fine') ({{ mainStore().totalItemsCount }})
+            span(v-if='main().totalItemsCount > 0', class='ml-0.5 text-white text-fine') ({{ main().totalItemsCount }})
 
   div(v-if='searchOpen', class='bg-page-alt border-b border-soft')
     div(class='max-w-7xl mx-auto px-6 py-3 flex gap-3')
@@ -62,15 +61,13 @@ header(class='sticky top-0 z-40')
 
     div(class='py-2')
       router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/') Home
-      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop') All Products
-      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop?category=audio') Audio
-      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop?category=wearables') Wearables
-      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop?category=gadgets') Gadgets
-      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/track-order') Track Order
-      router-link(class='flex items-center px-5 py-3 label-ink', @click='mobileMenuOpen = false', to='/shop?sale=true') Deals
+      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop?category=watches') Watches
+      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop?category=accessories') Everyday Gear
+      router-link(class='flex items-center px-5 py-3 label-ink border-b border-soft', @click='mobileMenuOpen = false', to='/shop') All Drops
+      router-link(class='flex items-center px-5 py-3 label-ink', @click='mobileMenuOpen = false', to='/track-order') Track Order
 
     div(class='p-4 border-t border-soft')
-      div(v-if='mainStore().isCustomerLoggedIn', class='flex gap-3')
+      div(v-if='main().isCustomerLoggedIn', class='flex gap-3')
         router-link(class='flex-1 text-center py-2.5 btn-primary', @click='mobileMenuOpen = false', to='/account/orders') My Orders
         button(class='px-4 py-2.5 btn-outline', @click='handleLogout') Sign Out
       div(v-else, class='flex gap-2')
@@ -81,7 +78,7 @@ header(class='sticky top-0 z-40')
 <script setup>
 import { ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 import IconCart from '@/components/icons/cart.vue';
 import IconSearch from '@/components/icons/search.vue';
 import IconUser from '@/components/icons/user.vue';
@@ -103,7 +100,7 @@ function handleSearch() {
 }
 
 async function handleLogout() {
-  await mainStore().logout();
+  await main().logout();
   mobileMenuOpen.value = false;
   router.push('/');
 }

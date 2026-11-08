@@ -64,7 +64,7 @@ StoreLayout
                 p(class='text-fine text-muted uppercase tracking-editorial') UPI, Cards, NetBanking, EMI
                 span(class='badge-status-pending mt-2') Recommended
 
-              div(v-if='mainStore().codEnabled', class='p-4 border cursor-pointer transition-all', :class='form.paymentMethod === "cod" ? "border-ink bg-surface" : "border-soft bg-white hover:border-ink"', @click='form.paymentMethod = "cod"')
+              div(v-if='main().codEnabled', class='p-4 border cursor-pointer transition-all', :class='form.paymentMethod === "cod" ? "border-ink bg-surface" : "border-soft bg-white hover:border-ink"', @click='form.paymentMethod = "cod"')
                 div(class='flex items-center justify-between mb-2')
                   span(class='heading-xs text-ink') Cash on Delivery
                   span(v-if='form.paymentMethod === "cod"', class='text-ink font-bold text-xs') ●
@@ -74,10 +74,10 @@ StoreLayout
 
         div(class='space-y-5 lg:col-span-5')
           div(class='panel-editorial p-6 space-y-5')
-            h2(class='heading-sm text-ink') Order Summary ({{ mainStore().totalItemsCount }})
+            h2(class='heading-sm text-ink') Order Summary ({{ main().totalItemsCount }})
 
             div(class='divide-y divide-soft max-h-80 overflow-y-auto pr-1')
-              div(v-for='item in mainStore().items', :key='item.id', class='py-3 flex items-center justify-between gap-3')
+              div(v-for='item in main().items', :key='item.id', class='py-3 flex items-center justify-between gap-3')
                 div(class='flex items-center gap-3 min-w-0')
                   div(class='w-14 h-16 bg-surface border border-soft flex items-center justify-center p-1 shrink-0 overflow-hidden')
                     img(class='h-full w-full object-cover', :src='item.product?.primary_image_url || "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=150&q=80"', :alt='item.product?.name')
@@ -91,22 +91,22 @@ StoreLayout
             div(class='space-y-2 pt-3 border-t border-soft text-cap text-muted uppercase tracking-editorial')
               div(class='flex justify-between')
                 span Subtotal
-                span(class='text-ink font-semibold') {{ formatPrice(mainStore().subtotalPaisa) }}
-              div(v-if='mainStore().discountPaisa > 0', class='flex justify-between text-ink font-semibold')
+                span(class='text-ink font-semibold') {{ formatPrice(main().subtotalPaisa) }}
+              div(v-if='main().discountPaisa > 0', class='flex justify-between text-ink font-semibold')
                 span Coupon Savings
-                span −{{ formatPrice(mainStore().discountPaisa) }}
+                span −{{ formatPrice(main().discountPaisa) }}
               div(class='flex justify-between')
                 span Shipping
-                span(v-if='mainStore().shippingPaisa === 0', class='text-ink font-bold') FREE
-                span(v-else, class='text-ink font-semibold') {{ formatPrice(mainStore().shippingPaisa) }}
+                span(v-if='main().shippingPaisa === 0', class='text-ink font-bold') FREE
+                span(v-else, class='text-ink font-semibold') {{ formatPrice(main().shippingPaisa) }}
               div(class='flex justify-between text-body-sm font-bold text-ink pt-3 border-t border-soft')
                 span Total Amount
-                span {{ formatPrice(mainStore().totalPaisa) }}
+                span {{ formatPrice(main().totalPaisa) }}
 
             button(class='btn-primary w-full py-4 text-center justify-center disabled:opacity-50', :disabled='isSubmitting', @click='handlePlaceOrder')
               span(v-if='isSubmitting') Processing Order...
               span(v-else-if='form.paymentMethod === "cod"') Confirm Cash on Delivery Order →
-              span(v-else) Pay {{ formatPrice(mainStore().totalPaisa) }} Securely →
+              span(v-else) Pay {{ formatPrice(main().totalPaisa) }} Securely →
 
             div(class='p-3 bg-surface border border-soft text-center text-fine text-muted uppercase tracking-editorial')
               | 🔒 256-Bit SSL Encrypted Checkout · Instant Tracking SMS
@@ -117,16 +117,16 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
-import { formatPrice, api } from '@/helpers';
+import { main } from '@/store';
+import { formatPrice, http } from '@/helpers';
 
 const router = useRouter();
 const isSubmitting = ref(false);
 
 const form = ref({
-  customerName: mainStore().customer?.name || '',
-  customerEmail: mainStore().customer?.email || '',
-  customerPhone: mainStore().customer?.phone || '',
+  customerName: main().customer?.name || '',
+  customerEmail: main().customer?.email || '',
+  customerPhone: main().customer?.phone || '',
   addressLine1: '',
   addressLine2: '',
   city: '',
@@ -137,37 +137,37 @@ const form = ref({
 });
 
 onMounted(() => {
-  if (mainStore().items.length === 0) {
-    mainStore().info('Your bag is empty. Add items before checking out.');
+  if (main().items.length === 0) {
+    main().info('Your bag is empty. Add items before checking out.');
     router.push('/shop');
   }
 });
 
 async function handlePlaceOrder() {
   if (!form.value.customerName.trim() || !form.value.customerPhone.trim()) {
-    mainStore().error('Please enter your full name and mobile phone number.');
+    main().toast('Please enter your full name and mobile phone number.', 'error');
     return;
   }
 
   if (form.value.customerPhone.replace(/[^0-9]/g, '').length !== 10) {
-    mainStore().error('Please enter a valid 10-digit Indian mobile number.');
+    main().toast('Please enter a valid 10-digit Indian mobile number.', 'error');
     return;
   }
 
   if (!form.value.addressLine1.trim() || !form.value.city.trim() || !form.value.state.trim() || !form.value.pincode.trim()) {
-    mainStore().error('Please complete all required shipping address fields.');
+    main().toast('Please complete all required shipping address fields.', 'error');
     return;
   }
 
   if (form.value.pincode.replace(/[^0-9]/g, '').length !== 6) {
-    mainStore().error('Please enter a valid 6-digit Indian PIN code.');
+    main().toast('Please enter a valid 6-digit Indian PIN code.', 'error');
     return;
   }
 
   isSubmitting.value = true;
   try {
     const payload = {
-      items: mainStore().items.map((it) => ({
+      items: main().items.map((it) => ({
         productId: it.productId || it.product?.id,
         variantId: it.variantId,
         quantity: it.quantity,
@@ -184,79 +184,77 @@ async function handlePlaceOrder() {
         country: 'India',
       },
       paymentMethod: form.value.paymentMethod,
-      couponCode: mainStore().appliedCoupon?.code || undefined,
+      couponCode: main().appliedCoupon?.code || undefined,
     };
 
-    const res = await api.post('/checkout', payload);
+    const res = await http.post('/checkout', payload);
+    const orderId = res.data.orderId;
+    const orderNumber = res.data.orderNumber;
+    const totalAmountPaisa = res.data.totalPaisa;
+    const gatewayOrderId = res.data.gatewayOrderId;
+    const keyId = res.data.keyId;
 
-    if (res.success && res.data) {
-      const order = res.data.order || {};
-      const orderId = order.id || res.data.orderId;
-      const orderNumber = order.order_number || res.data.orderNumber;
-      const totalAmountPaisa = order.total_amount_paisa || order.total_paisa || res.data.totalPaisa || mainStore().totalPaisa;
-
-      if (form.value.paymentMethod === 'cod') {
-        mainStore().clearCart();
-        mainStore().success('Order placed successfully!');
-        router.push({ name: 'order-success', query: { orderId, orderNumber } });
-        return;
-      }
-
-      await loadRazorpayScript();
-
-      const isMockGateway = !window.Razorpay || res.data.gatewayOrderId?.startsWith('mock_') || res.data.keyId?.includes('placeholder');
-
-      if (isMockGateway) {
-        mainStore().success('Order created! Confirming payment...');
-        await api.post('/payments/verify', {
-          gatewayOrderId: res.data.gatewayOrderId,
-          gatewayPaymentId: `pay_test_${dayjs().valueOf()}`,
-          signature: 'dev_mock_signature',
-        }).catch(() => {});
-        mainStore().clearCart();
-        router.push({ name: 'order-success', query: { orderId, orderNumber } });
-        return;
-      }
-
-      const options = {
-        key: res.data.keyId || 'rzp_test_placeholder',
-        amount: totalAmountPaisa,
-        currency: 'INR',
-        name: mainStore().brandName,
-        description: `Order ${orderNumber}`,
-        order_id: res.data.gatewayOrderId,
-        prefill: {
-          name: form.value.customerName,
-          email: form.value.customerEmail,
-          contact: form.value.customerPhone,
-        },
-        handler: async (paymentResponse) => {
-          try {
-            await api.post('/payments/verify', {
-              gatewayOrderId: paymentResponse.razorpay_order_id,
-              gatewayPaymentId: paymentResponse.razorpay_payment_id,
-              signature: paymentResponse.razorpay_signature,
-            });
-            mainStore().clearCart();
-            mainStore().success('Payment verified! Order confirmed.');
-            router.push({ name: 'order-success', query: { orderId, orderNumber } });
-          } catch (verifyError) {
-            mainStore().error(verifyError.message || 'Payment verification failed');
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            mainStore().info('Payment window was closed.');
-            isSubmitting.value = false;
-          },
-        },
-      };
-
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+    if (form.value.paymentMethod === 'cod') {
+      main().clearCart();
+      main().toast('Order placed successfully!', 'success');
+      router.push({ name: 'order-success', query: { orderId, orderNumber } });
+      return;
     }
+
+    await loadRazorpayScript();
+
+    const isMockGateway = !window.Razorpay || gatewayOrderId.startsWith('mock_') || keyId.includes('placeholder');
+
+    if (isMockGateway) {
+      main().toast('Order created! Confirming payment...', 'success');
+      await http.post('/payments/verify', {
+        gatewayOrderId,
+        gatewayPaymentId: `pay_test_${dayjs().valueOf()}`,
+        signature: 'dev_mock_signature',
+      }).catch(() => {});
+      main().clearCart();
+      router.push({ name: 'order-success', query: { orderId, orderNumber } });
+      return;
+    }
+
+    const options = {
+      key: keyId,
+      amount: totalAmountPaisa,
+      currency: 'INR',
+      name: main().brandName,
+      description: `Order ${orderNumber}`,
+      order_id: gatewayOrderId,
+      prefill: {
+        name: form.value.customerName,
+        email: form.value.customerEmail,
+        contact: form.value.customerPhone,
+      },
+      handler: async (paymentResponse) => {
+        try {
+          await http.post('/payments/verify', {
+            gatewayOrderId: paymentResponse.razorpay_order_id,
+            gatewayPaymentId: paymentResponse.razorpay_payment_id,
+            signature: paymentResponse.razorpay_signature,
+          });
+          main().clearCart();
+          main().toast('Payment verified! Order confirmed.', 'success');
+          router.push({ name: 'order-success', query: { orderId, orderNumber } });
+        } catch (verifyError) {
+          main().toast(verifyError.message || 'Payment verification failed', 'error');
+        }
+      },
+      modal: {
+        ondismiss: () => {
+          main().toast('Payment window was closed.', 'info');
+          isSubmitting.value = false;
+        },
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
   } catch (error) {
-    mainStore().error(error.message || 'Failed to place order');
+    main().toast(error.message || 'Failed to place order', 'error');
   } finally {
     isSubmitting.value = false;
   }

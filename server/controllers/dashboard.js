@@ -5,7 +5,7 @@ const api = {
   async getDashboardStats(req, res) {
     const qObj = {};
     try {
-      const [orderStats, customerCount, lowStockCount, recentOrders] = await Promise.all([
+      const [orderStats, customerCount, lowStockCount, recentOrders, lowStockProducts, topSellingProducts] = await Promise.all([
         db.one(
           req,
           `select
@@ -24,6 +24,24 @@ const api = {
            from orders order by created_at desc limit 10`,
           qObj,
         ),
+        db.any(
+          req,
+          `select id, name, name as title, sku, stock_quantity
+           from products
+           where stock_quantity <= 5 and is_active = true
+           order by stock_quantity asc limit 5`,
+          qObj,
+        ),
+        db.any(
+          req,
+          `select p.id, p.name, p.name as title, p.selling_price_paisa as retail_price_paisa, coalesce(sum(oi.quantity), 0) as total_units_sold
+           from products p
+           left join order_items oi on oi.product_id = p.id
+           where p.is_active = true
+           group by p.id, p.name, p.selling_price_paisa
+           order by total_units_sold desc limit 5`,
+          qObj,
+        ),
       ]);
 
       return res.status(200).json({
@@ -38,6 +56,8 @@ const api = {
             lowStockCount: parseInt(lowStockCount.low_stock_count, 10),
           },
           recentOrders,
+          lowStockProducts,
+          topSellingProducts,
         },
       });
     } catch (error) {

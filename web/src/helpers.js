@@ -112,7 +112,23 @@ async function request(endpoint, options = {}) {
   }
 
   if (!response.ok) {
-    const message = data?.error?.message || data?.message || `HTTP ${response.status} Error`;
+    let message =
+      (typeof data?.error === 'string' ? data.error : data?.error?.message) ||
+      data?.msg ||
+      data?.message;
+
+    if (!message && Array.isArray(data?.errors) && data.errors.length > 0) {
+      message = data.errors.map((e) => e?.msg || e?.message || e).join(', ');
+    }
+
+    if (!message && typeof data === 'string' && data.trim()) {
+      message = data;
+    }
+
+    if (!message) {
+      message = `HTTP ${response.status} Error`;
+    }
+
     const error = new Error(message);
     error.status = response.status;
     error.data = data;

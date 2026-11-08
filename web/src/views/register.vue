@@ -39,7 +39,7 @@ StoreLayout
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 
 const router = useRouter();
 
@@ -54,22 +54,22 @@ const isLoading = ref(false);
 
 async function handleRegister() {
   if (form.value.phone.replace(/[^0-9]/g, '').length !== 10) {
-    mainStore().error('Please enter a valid 10-digit Indian mobile number.');
+    main().error('Please enter a valid 10-digit Indian mobile number.');
     return;
   }
 
   isLoading.value = true;
   try {
-    await mainStore().register({
+    await main().register({
       name: form.value.name.trim(),
       phone: form.value.phone.trim(),
       email: form.value.email.trim(),
       password: form.value.password,
     });
-    mainStore().success('Account created successfully!');
+    main().success('Account created successfully!');
     router.push('/account/orders');
   } catch (error) {
-    mainStore().error(error.message || 'Registration failed');
+    main().error(error.message || 'Registration failed');
   } finally {
     isLoading.value = false;
   }

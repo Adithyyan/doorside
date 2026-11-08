@@ -35,7 +35,7 @@ StoreLayout
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import StoreLayout from '@/components/StoreLayout.vue';
-import { mainStore } from '@/store';
+import { main } from '@/store';
 
 const router = useRouter();
 const route = useRoute();
@@ -50,12 +50,12 @@ async function handleLogin() {
   }
   isLoading.value = true;
   try {
-    await mainStore().login(email.value.trim(), password.value);
-    mainStore().success('Logged in successfully!');
+    await main().login(email.value.trim(), password.value);
+    main().success('Logged in successfully!');
     const redirect = route.query.redirect || '/account/orders';
     router.push(redirect);
   } catch (error) {
-    mainStore().error(error.message || 'Login failed. Please check your credentials.');
+    main().error(error.message || 'Login failed. Please check your credentials.');
   } finally {
     isLoading.value = false;
   }
